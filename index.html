@@ -145,6 +145,13 @@
   @media(max-width:600px){.gloss .row{grid-template-columns:1fr} .gloss .t{border-right:none; border-bottom:1px solid var(--line-soft)}}
   @media(max-width:600px){section{padding:48px 16px} .hero{padding:56px 16px 44px}}
 
+  .qlegend{display:flex; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--body); margin:6px 0 10px}
+  .qlegend span{display:inline-flex; align-items:center; gap:6px}
+  .qchart{position:relative; border:1px solid var(--line); border-radius:var(--radius); padding:10px; background:#fff}
+  .qchart svg{display:block; width:100%; height:auto; font-family:inherit; min-width:620px}
+  .qchart{overflow-x:auto}
+  .qtip{position:absolute; pointer-events:none; background:#111827; color:#fff; font-size:12.5px; line-height:1.55; padding:10px 12px; border-radius:8px; max-width:230px; box-shadow:0 6px 20px rgba(0,0,0,.18)}
+  .qtip b{color:#fff} .qtip span{color:#cbd5e1}
   footer{background:#fff; padding:56px 24px; border-top:1px solid var(--line)}
   footer .wrap{color:var(--muted); font-size:13px}
   footer h3{font-size:16px; margin-bottom:14px}
@@ -170,6 +177,7 @@
       <a href="#summary">핵심 요약<span>한 장 결론 · 교차검증</span></a>
       <a href="#market">A. 시장<span>규모·성장·헤리티지 수요</span></a>
       <a href="#comp">B. 경쟁 제품<span>가격·ml당 단가·포지셔닝</span></a>
+      <a href="#quad">B-2. 4분면 포지셔닝<span>제품력 × 가격경쟁력 지도</span></a>
       <a href="#target">C. 타겟<span>데이터·페르소나·패인포인트</span></a>
       <a href="#position">D. 포지셔닝·검증 설계<span>카테고리 이름·랜딩 테스트</span></a>
       <a href="#reg">E. 규제<span>분류·알레르기 표시·광고 표현</span></a>
@@ -315,6 +323,44 @@
     <caption>가격은 2026-10 공식몰·백화점 온라인·가격기록 사이트 표시가 기준입니다. 결제가와 재고는 다를 수 있습니다.</caption></div>
 
     <div class="okbox"><b>읽는 법.</b> 온백 8,900원/ml는 "디자인 퍼퓸오일(7천 원대)"과 "수입 니치 롤온(1.5만 원대)" 사이에 있습니다. 아로마 롤온과 붙으면 5~10배 비싸 보입니다. 그래서 상세페이지와 광고에서 <b>"아로마"라는 단어를 첫 화면에 쓰지 않는 것</b>이 가격 방어의 첫 단계입니다. 탬버린즈와의 차이(+23%)는 용기 오브제와 한국 공간 서사로 설명해야 합니다.</div>
+  </div>
+</section>
+
+<section id="quad">
+  <div class="wrap">
+    <div class="eyebrow">B-2 · Price Map</div>
+    <h2 class="sect">4분면 포지셔닝: 제품력 × 가격경쟁력</h2>
+    <p class="sect-sub">가로축은 가격경쟁력입니다. 오른쪽으로 갈수록 ml당 가격이 쌉니다. 세로축은 제품력으로, 원료·조향·용기·브랜드 신뢰·지속력 다섯 항목을 각 2점 만점으로 매긴 10점 척도입니다. 온백은 출시 전이라 점수가 가설이고, 오브제가 실제로 어떤 완성도로 나오느냐에 따라 세로로 움직입니다.</p>
+
+    <div class="qlegend">
+      <span><svg width="14" height="14"><path d="M7 1 L13 7 L7 13 L1 7Z" fill="#111827"/></svg>온백 (가설)</span>
+      <span><svg width="14" height="14"><circle cx="7" cy="7" r="5.5" fill="#2a78d6"/></svg>수입 니치 롤온</span>
+      <span><svg width="14" height="14"><rect x="1.5" y="1.5" width="11" height="11" rx="2" fill="#eb6834"/></svg>디자인·바디 브랜드 롤온</span>
+      <span><svg width="14" height="14"><path d="M7 1.5 L13 12.5 L1 12.5Z" fill="#1baf7a"/></svg>아로마·대중 롤온</span>
+    </div>
+    <div class="qchart" id="qchart">
+      <svg id="qsvg" viewBox="0 0 760 540" role="img" aria-label="제품력과 ml당 가격으로 본 롤온 향 제품 4분면 지도"></svg>
+      <div class="qtip" id="qtip" hidden></div>
+    </div>
+    <p class="hint">가로축은 로그 눈금입니다(700원~16,000원/ml를 한 화면에 담기 위함). 4분면 경계선은 ml당 5,000원과 제품력 5점입니다. 온백의 점선은 가설 범위입니다. 신뢰를 쌓으면 위로 7.5~8점, 오브제 완성도와 신뢰에 실패하면 아래로 4.5점까지 움직입니다. 점에 마우스를 올리면 항목별 점수가 보입니다.</p>
+
+    <div class="cols2" style="margin-top:22px">
+      <div class="card fill"><h4>프리미엄 정당화 (왼쪽 위)</h4><p>비싸지만 제품력으로 가격을 설명하는 칸입니다. 르라보, 바이레도, 탬버린즈가 여기 있습니다. <b>온백이 서야 할 칸</b>입니다.</p></div>
+      <div class="card fill"><h4>가성비 강자 (오른쪽 위)</h4><p>합리적인 가격에 제품력도 받쳐 주는 칸입니다. 이솝 진저 플라이트가 대표적입니다. 브랜드 신뢰가 가격 저항을 낮춥니다.</p></div>
+      <div class="card fill"><h4>가격 미정당화 (왼쪽 아래)</h4><p>비싼데 그만한 이유가 보이지 않는 칸입니다. 오브제 완성도가 떨어지거나 신뢰를 못 쌓으면 <b>온백이 미끄러질 수 있는 칸</b>입니다.</p></div>
+      <div class="card fill"><h4>저가 경쟁 (오른쪽 아래)</h4><p>만 원대 아로마 롤온이 모인 칸입니다. "아로마"라는 이름을 쓰는 순간 고객은 온백을 이 칸과 비교합니다.</p></div>
+    </div>
+
+    <div class="warnbox"><b>지도에서 보이는 것.</b> 온백(6.5점)은 탬버린즈(7.5점)보다 <b>ml당 23% 비싼데 제품력 점수는 1점 낮습니다.</b> 차이는 거의 브랜드 신뢰(0.5 vs 2)와 지속력에서 납니다. 원료 점수는 온백이 더 높고, 용기 점수는 같습니다. 그러니 할 일은 두 가지입니다.
+      <ul class="clean" style="margin-top:10px">
+        <li><b>신뢰 점수를 출시 전에 쌓습니다.</b> 시딩 후기, 원료 증빙, 용기 제작 과정 콘텐츠로 0.5점을 1.5점까지 올리면 탬버린즈와 같은 높이(7.5점)에 섭니다.</li>
+        <li><b>지속력은 점수 싸움에서 빼냅니다.</b> 휴대형으로 "덧바르는 습관"을 만들면 고객은 지속력을 묻지 않게 됩니다. "향수"로 부르면 이 항목이 바로 약점이 됩니다.</li>
+      </ul>
+    </div>
+
+    <h3 class="block">제품력 채점표</h3>
+    <div class="tw"><table id="t-quad"><thead><tr><th>제품</th><th class="num">원/ml</th><th class="num">원료</th><th class="num">조향</th><th class="num">용기·오브제</th><th class="num">브랜드 신뢰</th><th class="num">지속력·사용성</th><th class="num">제품력</th></tr></thead><tbody></tbody></table>
+    <caption>공개 정보(공식몰 전성분·제품 설명·유통 채널·인지도)를 바탕으로 한 연구자 평가입니다. 시향 테스트가 아니므로 절대값보다 상대 위치로 읽어 주세요. 온백은 2회차 기준 기획(천연 에센셜 오일, 선추 오브제, 지속 약 3시간)을 가정한 점수입니다.</caption></div>
   </div>
 </section>
 
@@ -688,6 +734,106 @@
 
   document.querySelectorAll('.calc input').forEach(function(el){ el.addEventListener('input', render); });
   render();
+})();
+
+(function(){
+  // s = [원료, 조향, 용기·오브제, 브랜드 신뢰, 지속력·사용성], 각 0~2
+  var G = {
+    me:    { color:'#111827', shape:'diamond' },
+    niche: { color:'#2a78d6', shape:'circle' },
+    design:{ color:'#eb6834', shape:'square' },
+    aroma: { color:'#1baf7a', shape:'triangle' }
+  };
+  var D = [
+    { n:'온백 10ml (가설)', g:'me', p:8900, s:[2,1.5,2,0.5,0.5], lx:-14, ly:24, a:'end' },
+    { n:'르라보 리퀴드 밤', g:'niche', p:15833, s:[1,2,1,2,2], lx:12, ly:-12, a:'start' },
+    { n:'바이레도 롤온', g:'niche', p:14667, s:[1,2,1,2,1.5], lx:12, ly:18, a:'start' },
+    { n:'탬버린즈 퍼퓸오일', g:'design', p:7250, s:[1,1.5,2,2,1], lx:12, ly:-12, a:'start' },
+    { n:'이솝 진저 플라이트', g:'design', p:4500, s:[2,1,0.5,2,1], lx:12, ly:-12, a:'start' },
+    { n:'록시땅 롤온 EDT', g:'design', p:2900, s:[0.5,1,0.5,1.5,1], lx:12, ly:18, a:'start' },
+    { n:'아로마티카 롤온', g:'aroma', p:3667, s:[2,0.5,0.5,1.5,0.5], lx:-12, ly:-12, a:'end' },
+    { n:'이브나잇 블렌디드', g:'aroma', p:1920, s:[1.5,0.5,0,0.5,0.5], lx:12, ly:-10, a:'start' },
+    { n:'바이오앤바이오 롤온', g:'aroma', p:1250, s:[1,0.5,0,0.5,0.5], lx:-12, ly:18, a:'end' },
+    { n:'더허브스토리 롤링향수', g:'aroma', p:700, s:[0.5,0.5,0,0,0.5], lx:-12, ly:22, a:'end' }
+  ];
+  D.forEach(function(d){ d.score = d.s.reduce(function(a, b){ return a + b; }, 0); });
+
+  var W = 760, H = 540, m = { l:64, r:28, t:28, b:66 };
+  var iw = W - m.l - m.r, ih = H - m.t - m.b;
+  var lmin = Math.log10(20000), lmax = Math.log10(500);   // 왼쪽 = 비쌈, 오른쪽 = 쌈
+  var x = function(p){ return m.l + (Math.log10(p) - lmin) / (lmax - lmin) * iw; };
+  var y = function(v){ return m.t + (1 - v / 10) * ih; };
+  var NS = 'http://www.w3.org/2000/svg';
+  var svg = document.getElementById('qsvg'), tip = document.getElementById('qtip');
+  function el(tag, attrs, parent){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    (parent || svg).appendChild(e); return e;
+  }
+  function txt(s, attrs, parent){ var t = el('text', attrs, parent); t.textContent = s; return t; }
+
+  var xm = x(5000), ym = y(5);
+  // 4분면 배경
+  [
+    [m.l, m.t, xm - m.l, ym - m.t, '#f3f7ee', '프리미엄 정당화', m.l + 12, m.t + 22, 'start'],
+    [xm, m.t, m.l + iw - xm, ym - m.t, '#e6f4f2', '가성비 강자', m.l + iw - 12, m.t + 22, 'end'],
+    [m.l, ym, xm - m.l, m.t + ih - ym, '#fdecec', '가격 미정당화', m.l + 12, m.t + ih - 12, 'start'],
+    [xm, ym, m.l + iw - xm, m.t + ih - ym, '#f8fafc', '저가 경쟁', m.l + iw - 12, m.t + ih - 12, 'end']
+  ].forEach(function(q){
+    el('rect', { x:q[0], y:q[1], width:q[2], height:q[3], fill:q[4] });
+    txt(q[5], { x:q[6], y:q[7], 'text-anchor':q[8], 'font-size':13, 'font-weight':800, fill:'#6b7280' });
+  });
+
+  // 눈금
+  [700, 1000, 2000, 3000, 5000, 7000, 10000, 15000].forEach(function(p){
+    el('line', { x1:x(p), x2:x(p), y1:m.t + ih, y2:m.t + ih + 5, stroke:'#9ca3af' });
+    txt(p >= 1000 ? (p / 1000) + '천' : String(p), { x:x(p), y:m.t + ih + 20, 'text-anchor':'middle', 'font-size':12, fill:'#6b7280' });
+  });
+  [0, 2, 4, 6, 8, 10].forEach(function(v){
+    el('line', { x1:m.l - 5, x2:m.l, y1:y(v), y2:y(v), stroke:'#9ca3af' });
+    txt(String(v), { x:m.l - 10, y:y(v) + 4, 'text-anchor':'end', 'font-size':12, fill:'#6b7280' });
+  });
+  el('line', { x1:xm, x2:xm, y1:m.t, y2:m.t + ih, stroke:'#9ca3af', 'stroke-dasharray':'4 4' });
+  el('line', { x1:m.l, x2:m.l + iw, y1:ym, y2:ym, stroke:'#9ca3af', 'stroke-dasharray':'4 4' });
+  el('rect', { x:m.l, y:m.t, width:iw, height:ih, fill:'none', stroke:'#e5e7eb' });
+  txt('← 비쌈      가격경쟁력 (원/ml, 로그 눈금)      쌈 →', { x:m.l + iw / 2, y:H - 18, 'text-anchor':'middle', 'font-size':13, 'font-weight':700, fill:'#374151' });
+  txt('제품력 (10점)', { x:18, y:m.t + ih / 2, 'text-anchor':'middle', 'font-size':13, 'font-weight':700, fill:'#374151', transform:'rotate(-90 18 ' + (m.t + ih / 2) + ')' });
+
+  // 온백 가설 범위 (오브제 완성도·신뢰에 따라)
+  var me = D[0];
+  el('line', { x1:x(me.p), x2:x(me.p), y1:y(4.5), y2:y(8), stroke:'#111827', 'stroke-width':2, 'stroke-dasharray':'3 4', opacity:.55 });
+  txt('오브제·신뢰 실패 시 4.5', { x:x(me.p) + 10, y:y(4.5) + 4, 'font-size':11, fill:'#b91c1c' });
+
+  function mark(d, g){
+    var cx = x(d.p), cy = y(d.score), c = G[d.g].color, r = d.g === 'me' ? 9 : 6.5;
+    var shp;
+    if (G[d.g].shape === 'circle') shp = el('circle', { cx:cx, cy:cy, r:r }, g);
+    else if (G[d.g].shape === 'square') shp = el('rect', { x:cx - r + .5, y:cy - r + .5, width:2 * r - 1, height:2 * r - 1, rx:2 }, g);
+    else if (G[d.g].shape === 'triangle') shp = el('path', { d:'M' + cx + ' ' + (cy - r - 1) + 'L' + (cx + r + 1) + ' ' + (cy + r - 1) + 'L' + (cx - r - 1) + ' ' + (cy + r - 1) + 'Z' }, g);
+    else shp = el('path', { d:'M' + cx + ' ' + (cy - r - 2) + 'L' + (cx + r + 2) + ' ' + cy + 'L' + cx + ' ' + (cy + r + 2) + 'L' + (cx - r - 2) + ' ' + cy + 'Z' }, g);
+    shp.setAttribute('fill', c); shp.setAttribute('stroke', '#fff'); shp.setAttribute('stroke-width', 2);
+    txt(d.n, { x:cx + d.lx, y:cy + d.ly, 'text-anchor':d.a, 'font-size':d.g === 'me' ? 13 : 12, 'font-weight':d.g === 'me' ? 800 : 600, fill:'#111827' }, g);
+    el('circle', { cx:cx, cy:cy, r:18, fill:'transparent' }, g);   // 넉넉한 hover 영역
+  }
+  D.slice().reverse().forEach(function(d){
+    var g = el('g', { tabindex:0, style:'cursor:pointer;outline:none' });
+    mark(d, g);
+    var show = function(){
+      tip.innerHTML = '<b>' + d.n + '</b><br>' + d.p.toLocaleString('ko-KR') + '원/ml · 제품력 <b>' + d.score + '</b><br>' +
+        '<span>원료 ' + d.s[0] + ' · 조향 ' + d.s[1] + ' · 용기 ' + d.s[2] + ' · 신뢰 ' + d.s[3] + ' · 지속 ' + d.s[4] + '</span>';
+      var box = svg.getBoundingClientRect(), k = box.width / W;
+      tip.style.left = Math.min(x(d.p) * k + 14, box.width - 230) + 'px';
+      tip.style.top = (y(d.score) * k - 10) + 'px';
+      tip.hidden = false;
+    };
+    g.addEventListener('mouseenter', show); g.addEventListener('focus', show);
+    g.addEventListener('mouseleave', function(){ tip.hidden = true; }); g.addEventListener('blur', function(){ tip.hidden = true; });
+  });
+
+  document.querySelector('#t-quad tbody').innerHTML = D.slice().sort(function(a, b){ return b.score - a.score; }).map(function(d){
+    return '<tr' + (d.g === 'me' ? ' class="me"' : '') + '><td>' + (d.g === 'me' ? '<b>' + d.n + '</b>' : d.n) + '</td><td class="num">' + d.p.toLocaleString('ko-KR') + '</td>' +
+      d.s.map(function(v){ return '<td class="num">' + v + '</td>'; }).join('') + '<td class="num"><b>' + d.score + '</b></td></tr>';
+  }).join('');
 })();
 </script>
 </body>
