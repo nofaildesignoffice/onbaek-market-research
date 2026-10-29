@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>온백 시장·타겟 조사</title>
+<meta name="description" content="천연 에센셜 오일 롤온 향 브랜드 온백(ONBAEK)의 시장·경쟁제품·타겟 조사와 ROAS 하방 손익 모델. codex × Claude 2레인 교차검증.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --ink:#111827; --body:#374151; --muted:#6b7280; --faint:#9ca3af;
+    --line:#e5e7eb; --line-soft:#f1f3f5; --fill:#f8fafc; --fill-2:#f3f4f6;
+    --accent:#0d9488; --accent-deep:#0f5e58; --accent-soft:#e6f4f2;
+    --ok:#15803d; --ok-bg:#eafaf0; --warn:#b45309; --warn-bg:#fdf3e6; --low:#6b7280; --low-bg:#f1f3f5;
+    --neg:#b91c1c; --neg-bg:#fdecec;
+    --radius:16px; --radius-sm:10px; --maxw:920px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Pretendard',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    color:var(--body); background:#fff; line-height:1.75; letter-spacing:-.01em;
+    word-break:keep-all; -webkit-font-smoothing:antialiased;
+  }
+  section{background:#fff; padding:64px 24px; border-bottom:1px solid var(--line-soft)}
+  .wrap{max-width:var(--maxw); margin:0 auto}
+  h1,h2,h3,h4{color:var(--ink); line-height:1.3; letter-spacing:-.02em; font-weight:800}
+  p{margin:0 0 14px}
+  a{color:var(--accent-deep); text-decoration:none; border-bottom:1px solid rgba(13,148,136,.3)}
+  a:hover{border-bottom-color:var(--accent)}
+  strong,b{font-weight:700; color:var(--ink)}
+
+  .hero{background:#fff; padding:72px 24px 56px; border-bottom:1px solid var(--line)}
+  .hero .kicker{display:inline-block; font-size:13px; font-weight:700; letter-spacing:.04em;
+    color:var(--accent-deep); background:var(--accent-soft); padding:6px 14px; border-radius:999px; margin-bottom:22px}
+  .hero h1{font-size:clamp(28px,5vw,44px); font-weight:800; margin-bottom:18px}
+  .hero .lead{font-size:clamp(16px,2.2vw,19px); color:var(--body); max-width:730px; margin-bottom:26px}
+  .meta-row{display:flex; flex-wrap:wrap; gap:10px; font-size:13px}
+  .meta-row span{border:1px solid var(--line); border-radius:999px; padding:6px 14px; color:var(--muted); background:#fff}
+
+  .toc{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:34px}
+  .toc a{display:block; border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px 18px; color:var(--ink);
+    font-weight:600; font-size:15px; background:#fff; transition:.15s}
+  .toc a:hover{border-color:var(--accent); background:var(--accent-soft)}
+  .toc a span{display:block; font-size:12px; color:var(--muted); font-weight:500; margin-top:3px}
+
+  .eyebrow{font-size:13px; font-weight:700; letter-spacing:.06em; color:var(--accent); margin-bottom:10px; text-transform:uppercase}
+  h2.sect{font-size:clamp(24px,3.4vw,32px); margin-bottom:10px}
+  .sect-sub{font-size:16px; color:var(--muted); margin-bottom:34px; max-width:760px}
+  h3.block{font-size:20px; margin:40px 0 14px; padding-top:4px}
+  h4{font-size:16px; margin:24px 0 10px; font-weight:700}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin:26px 0}
+  .stat{border:1px solid var(--line); border-radius:var(--radius); padding:22px 20px; background:#fff}
+  .stat .n{font-size:28px; font-weight:800; color:var(--ink); line-height:1.1}
+  .stat .n small{font-size:14px; font-weight:700; color:var(--accent-deep)}
+  .stat .l{font-size:13px; color:var(--muted); margin-top:8px; line-height:1.5}
+
+  .card{border:1px solid var(--line); border-radius:var(--radius); padding:24px; background:#fff; margin:18px 0}
+  .card.fill{background:var(--fill)}
+  .card h4{margin-top:0}
+  .note{border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px 18px; background:var(--fill); font-size:14px; color:var(--body); margin:16px 0}
+  .warnbox{border:1px solid #f0d9b5; border-radius:var(--radius-sm); padding:16px 18px; background:var(--warn-bg); font-size:14px; margin:16px 0}
+  .warnbox > b:first-child{color:var(--warn)}
+  .okbox{border:1px solid #bfe6cc; border-radius:var(--radius-sm); padding:16px 18px; background:var(--ok-bg); font-size:14px; margin:16px 0}
+  .okbox > b:first-child{color:var(--ok)}
+
+  ul.clean{list-style:none; margin:12px 0}
+  ul.clean li{position:relative; padding-left:20px; margin-bottom:9px; font-size:15px}
+  ul.clean li::before{content:"·"; position:absolute; left:4px; top:-1px; color:var(--accent); font-weight:800; font-size:18px}
+  ol.steps{counter-reset:s; list-style:none; margin:14px 0}
+  ol.steps li{position:relative; padding-left:38px; margin-bottom:12px; font-size:15px}
+  ol.steps li::before{counter-increment:s; content:counter(s); position:absolute; left:0; top:1px;
+    width:24px; height:24px; border-radius:50%; background:var(--accent-soft); color:var(--accent-deep);
+    font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center}
+
+  .tw{overflow-x:auto; margin:18px 0; border:1px solid var(--line); border-radius:var(--radius)}
+  table{border-collapse:collapse; width:100%; font-size:14px; min-width:560px}
+  th,td{padding:12px 14px; text-align:left; border-bottom:1px solid var(--line-soft); vertical-align:top}
+  thead th{background:var(--fill-2); color:var(--ink); font-weight:700; font-size:13px; white-space:nowrap}
+  thead th small{font-weight:500; color:var(--muted)}
+  tbody tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums}
+  tbody tr:hover{background:var(--fill)}
+  caption{caption-side:bottom; font-size:12px; color:var(--faint); padding:10px 14px; text-align:left}
+  tr.me td{background:var(--accent-soft)}
+  tr.em td{background:var(--fill); font-weight:700; color:var(--ink)}
+
+  .badge{display:inline-block; font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; vertical-align:middle; white-space:nowrap}
+  .b-ok{background:var(--ok-bg); color:var(--ok)}
+  .b-warn{background:var(--warn-bg); color:var(--warn)}
+  .b-low{background:var(--low-bg); color:var(--low)}
+
+  .cols2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .cols3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  @media(max-width:760px){.cols2,.cols3{grid-template-columns:1fr}}
+  .hint{color:var(--muted); font-size:.92em; font-weight:500}
+
+  /* ml당 가격 막대 */
+  .bars{margin:18px 0; border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px}
+  .bar{display:grid; grid-template-columns:170px 1fr 92px; gap:12px; align-items:center; font-size:13px; padding:5px 0}
+  .bar .nm{color:var(--ink); font-weight:600}
+  .bar .tr{background:var(--line-soft); border-radius:6px; height:14px; overflow:hidden}
+  .bar .fl{display:block; height:100%; background:#94a3b8; border-radius:6px}
+  .bar.me .fl{background:var(--accent)}
+  .bar.me .nm{color:var(--accent-deep)}
+  .bar .vl{text-align:right; font-variant-numeric:tabular-nums; color:var(--body)}
+  @media(max-width:600px){.bar{grid-template-columns:110px 1fr 70px; font-size:12px}}
+
+  /* 페르소나 */
+  .persona{border:1px solid var(--line); border-radius:var(--radius); padding:20px; background:#fff}
+  .persona .tag{font-size:12px; font-weight:700; color:var(--accent-deep)}
+  .persona h4{margin:6px 0 10px; font-size:17px}
+  .persona dl{font-size:14px}
+  .persona dt{font-weight:700; color:var(--ink); margin-top:10px; font-size:13px}
+  .persona dd{color:var(--body)}
+
+  /* 계산기 */
+  .calc{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:14px 0}
+  .calc label{display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:600; color:var(--ink);
+    border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 14px; background:var(--fill)}
+  .calc input{font:inherit; font-size:16px; font-weight:700; border:1px solid var(--line); border-radius:8px; padding:8px 10px;
+    background:#fff; color:var(--ink); font-variant-numeric:tabular-nums; width:100%}
+  .calc input:focus{outline:2px solid var(--accent); outline-offset:1px}
+  #t-roas{min-width:1080px; font-size:13px}
+  #t-roas th,#t-roas td{padding:10px 10px}
+  #t-roas tr.neg td{color:var(--neg)}
+  #t-roas tr.neg td:first-child{background:var(--neg-bg)}
+  #t-roas tr.mid td:first-child{background:var(--warn-bg)}
+  #t-roas tr.pos td:first-child{background:var(--ok-bg)}
+  #t-matrix td small{display:block; font-size:11px; color:var(--muted); font-weight:500}
+  #t-matrix td{font-weight:700}
+  #t-matrix tbody th{background:var(--fill-2); white-space:nowrap}
+  #t-matrix .h1{background:#e6f4f2} #t-matrix .h2{background:#f3f7ee} #t-matrix .h3{background:#fdf3e6} #t-matrix .h4{background:#fdecec; color:var(--neg)}
+  #t-matrix .cur{outline:2px solid var(--ink); outline-offset:-2px}
+
+  .gloss{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin:14px 0 30px}
+  .gloss .row{display:grid; grid-template-columns:210px 1fr; border-bottom:1px solid var(--line-soft)}
+  .gloss .row:last-child{border-bottom:none}
+  .gloss .t{padding:13px 16px; font-weight:700; color:var(--ink); background:var(--fill-2); font-size:14px; border-right:1px solid var(--line-soft)}
+  .gloss .t small{display:block; font-weight:600; color:var(--muted); font-size:12px; margin-top:2px}
+  .gloss .d{padding:13px 16px; font-size:14px; color:var(--body); line-height:1.7}
+  .gloss .d em{font-style:normal; color:var(--accent-deep); font-weight:600}
+  @media(max-width:600px){.gloss .row{grid-template-columns:1fr} .gloss .t{border-right:none; border-bottom:1px solid var(--line-soft)}}
+  @media(max-width:600px){section{padding:48px 16px} .hero{padding:56px 16px 44px}}
+
+  footer{background:#fff; padding:56px 24px; border-top:1px solid var(--line)}
+  footer .wrap{color:var(--muted); font-size:13px}
+  footer h3{font-size:16px; margin-bottom:14px}
+  footer ol{margin:0 0 0 18px}
+  footer li{margin-bottom:7px; font-size:12.5px; word-break:break-all; line-height:1.6}
+  .disc{font-size:12px; color:var(--faint); margin-top:24px; line-height:1.7}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">시장·타겟 조사 · codex × Claude 2레인 교차검증</span>
+    <h1>온백(ONBAEK) 시장·경쟁·타겟 조사와 ROAS 하방</h1>
+    <p class="lead">천연 에센셜 오일 롤온 향 브랜드 <strong>온백</strong>의 출시 전 조사입니다. 한국 향수 시장, 경쟁 제품의 가격과 포지셔닝, 첫 타겟과 패인포인트, 규제, 그리고 광고를 돌렸을 때 손해를 보지 않는 ROAS 하방까지 정리했습니다. 두 개의 독립 리서치 레인으로 교차검증했고, 확인하지 못한 사실은 <strong>확인불가</strong>로 남겼습니다.</p>
+    <div class="meta-row">
+      <span>조사기준일 2026-10-29</span>
+      <span>3회차 컨설팅 사전자료</span>
+      <span>공개 1차소스 기반</span>
+      <span>결정은 대표님이</span>
+    </div>
+    <nav class="toc">
+      <a href="#summary">핵심 요약<span>한 장 결론 · 교차검증</span></a>
+      <a href="#market">A. 시장<span>규모·성장·헤리티지 수요</span></a>
+      <a href="#comp">B. 경쟁 제품<span>가격·ml당 단가·포지셔닝</span></a>
+      <a href="#target">C. 타겟<span>데이터·페르소나·패인포인트</span></a>
+      <a href="#position">D. 포지셔닝·검증 설계<span>카테고리 이름·랜딩 테스트</span></a>
+      <a href="#reg">E. 규제<span>분류·알레르기 표시·광고 표현</span></a>
+      <a href="#pnl">F. ROAS 하방<span>원가율·제경비·세금 손익표</span></a>
+      <a href="#unknown">확인불가 · 다음 액션<span>미팅에서 확인할 것</span></a>
+      <a href="#glossary">용어 사전<span>ROAS·공헌이익·공급가</span></a>
+    </nav>
+  </div>
+</header>
+
+<section id="summary">
+  <div class="wrap">
+    <div class="eyebrow">Summary</div>
+    <h2 class="sect">한 장 요약</h2>
+    <p class="sect-sub">결론부터 말씀드리면, 시장과 수요의 결은 온백 편이지만 숫자는 아직 빡빡합니다. 지금 구조에서 광고로 이익을 내려면 ROAS 약 295%가 필요합니다.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="n">1.18<small>조 원</small></div><div class="l">2025 국내 향수 시장<br>전년 대비 +6.7% (유로모니터)</div></div>
+      <div class="stat"><div class="n">12.6<small>%</small></div><div class="l">프리미엄 향수 연평균 성장<br>2019~2024 (유로모니터)</div></div>
+      <div class="stat"><div class="n">14.6<small>만 원</small></div><div class="l">30대 여성 향수 1회 구매액<br>(오픈서베이 2025)</div></div>
+      <div class="stat"><div class="n">8,900<small>원/ml</small></div><div class="l">온백 10ml 잠정가 단가<br>탬버린즈 7,250 · 바이레도 14,667</div></div>
+    </div>
+
+    <ol class="steps">
+      <li><b>시장은 자라고, 고객은 "남과 다른 향"을 삽니다.</b> 국내 향수 시장은 1조 1,800억 원이고, 그중 프리미엄이 두 자릿수로 성장했습니다. 구매 기준 1위는 "내 취향에 맞는지"(67.9%), 2위는 "내가 추구하는 이미지"(39%)입니다. 이야기가 있는 향에 돈을 쓰는 구조입니다.</li>
+      <li><b>K-헤리티지 수요는 이미 증명됐습니다.</b> 국립박물관 굿즈 '뮷즈' 매출이 2024년 213억 원에서 2025년 413억 원으로 두 배가 됐고, 2026년 상반기에만 218억 원입니다. 코스맥스 '단미르 궁궐 향수'처럼 궁을 향으로 옮기는 시도도 시작됐습니다. 다만 온백이 그 수요를 가져온다는 근거는 아직 없습니다.</li>
+      <li><b>가장 가까운 경쟁자는 탬버린즈 퍼퓸 오일입니다.</b> 식물성 오일 롤온 6ml 43,500원에 매듭·보따리 서사를 씁니다. 온백 89,000원/10ml는 탬버린즈보다 ml당 23% 비싸고, 바이레도·르라보 롤온보다는 40% 가량 쌉니다. 이 가격 사이를 채우는 근거는 <b>용기 오브제의 가치</b>여야 합니다.</li>
+      <li><b>첫 타겟은 "취향을 사는 30대 직장인 여성"을 권합니다.</b> 이들의 1회 향수 구매액(14.6만 원)이 이미 89,000원보다 높습니다. 가장 아픈 지점은 "진한 향은 머리 아프고, 흔한 향은 싫다"입니다. 온백의 약한 발향과 휴대형 오브제가 이 문제를 <b>고객이 원하는 방식</b>으로 풉니다.</li>
+      <li><b>지속력 약점은 휴대형으로 뒤집습니다.</b> 3시간이면 사라지는 향을 "덧바르는 의식"으로 바꾸고, 목걸이·키링이 그 의식을 들고 다니게 해 줍니다. 그래서 첫 화면 상품은 <b>10ml 거치형 + 휴대형 번들</b>을 권합니다.</li>
+      <li><b>ROAS 하방은 약 295%입니다.</b> 광고비만 회수하는 선은 203%, 월 고정비까지 회수하는 선은 264%, 순이익 5%를 남기는 선이 295%입니다. 원가율을 25%로 낮추거나 번들로 객단가를 올리는 것이 하방을 내리는 가장 빠른 수단입니다.</li>
+    </ol>
+
+    <h3 class="block">2레인 교차검증</h3>
+    <div class="tw"><table>
+      <thead><tr><th>항목</th><th>codex</th><th>Claude</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr><td>국내 향수 시장 2025년 1조 1,800억 원, +6.7%</td><td>✅ 이데일리</td><td>✅ 한경·다음</td><td><span class="badge b-ok">합치</span></td></tr>
+        <tr><td>프리미엄 향수 2019~2024 연평균 12.6%</td><td>✅ 유로모니터 직접</td><td>— 해외 리서치사만</td><td><span class="badge b-ok">codex 1차출처</span></td></tr>
+        <tr><td>뮷즈 매출 2025년 413억 원</td><td>✅</td><td>✅</td><td><span class="badge b-ok">합치</span></td></tr>
+        <tr><td>바이레도 롤온 7.5ml 가격</td><td>110,000원 (롯데온)</td><td>121,000원 (Selfridges KR)</td><td><span class="badge b-warn">채널차, 11~12만 원대</span></td></tr>
+        <tr><td>여성 구매 기준 "취향" 67.9%</td><td>✅ 오픈서베이 원문</td><td>✅ 언론 인용</td><td><span class="badge b-ok">합치</span></td></tr>
+        <tr><td>알레르기 유발성분 25종, 0.001% 초과 표시</td><td>✅ 식약처 FAQ</td><td>✅ 대한화장품협회</td><td><span class="badge b-ok">합치</span></td></tr>
+        <tr><td>한국 메타 뷰티 CPM·CPC·ROAS 평균</td><td>확인불가</td><td>해외 평균만</td><td><span class="badge b-low">확인불가 → 직접 측정</span></td></tr>
+        <tr><td>롤온·퍼퓸오일 세그먼트 규모</td><td>확인불가</td><td>확인불가</td><td><span class="badge b-low">확인불가</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="market">
+  <div class="wrap">
+    <div class="eyebrow">A · Market</div>
+    <h2 class="sect">시장: 자라는 판, 하지만 온백의 칸은 아직 없습니다</h2>
+    <p class="sect-sub">향수 시장 전체는 커지고 있지만, 롤온·퍼퓸오일만의 시장 규모는 어디에도 집계되지 않습니다. 시장을 TAM에서 SOM까지 좁혀 보면 온백이 실제로 싸울 곳이 보입니다.</p>
+
+    <div class="tw"><table>
+      <thead><tr><th>구분</th><th>수치</th><th>출처·주의</th></tr></thead>
+      <tbody>
+        <tr><td>국내 향수 시장 2024</td><td class="num">1조 1,060억 원</td><td class="hint">유로모니터 인용 보도</td></tr>
+        <tr><td>국내 향수 시장 2025</td><td class="num">1조 1,800억 원 (+6.7%)</td><td class="hint">유로모니터 추산. 정부 확정 통계 아님</td></tr>
+        <tr><td>2028 전망</td><td class="num">1조 3,570억 원 (연 4.4%)</td><td class="hint">유로모니터 전망</td></tr>
+        <tr><td>프리미엄 향수 연평균 성장</td><td class="num">12.6% (2019~2024)</td><td class="hint">니치만의 수치 아님</td></tr>
+        <tr><td>29CM 향수 매출 (2025.10~12)</td><td class="num">전년 대비 +84%</td><td class="hint">2030 비중 높은 플랫폼 내부 실적</td></tr>
+        <tr><td>무신사 향수 판매량</td><td class="num">2025 +24%, 2026.1~4월 +13%</td><td class="hint">플랫폼 내부 실적</td></tr>
+        <tr><td>W컨셉 향수 매출</td><td class="num">+38%</td><td class="hint">플랫폼 내부 실적</td></tr>
+        <tr><td>롤온·퍼퓸오일·고체향 세그먼트</td><td class="num">확인불가</td><td class="hint">공개 통계 없음</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="block">시장을 세 겹으로 좁히면</h3>
+    <div class="cols3">
+      <div class="card fill"><h4>TAM · 국내 향수</h4><p>약 1.18조 원. 스프레이 향수가 대부분이라 온백과 직접 겹치는 부분은 일부입니다.</p></div>
+      <div class="card fill"><h4>SAM · 프리미엄·니치 향 + 헤리티지 선물</h4><p>취향과 이야기로 사는 고객층입니다. 29CM·W컨셉 향수 매출이 두 자릿수 이상 성장하는 구간입니다.</p></div>
+      <div class="card fill"><h4>SOM · 온백의 진입 칸</h4><p>"몸에 지니는 한국적 향 오브제". 탬버린즈 오일과 뮷즈 굿즈 사이의 빈칸입니다. 규모는 확인불가라서 <b>테스트로 측정해야 하는 칸</b>입니다.</p></div>
+    </div>
+
+    <h3 class="block">세 가지 흐름</h3>
+    <ul class="clean">
+      <li><b>남과 같은 향은 재미없다.</b> 니치 수요는 2030 중심으로 커지고 있습니다. 인하대 이은희 교수는 "아무리 유명하고 비싼 브랜드라도 남과 똑같은 향을 공유하는 것은 재미없다고 느낀다"고 설명합니다. 로에베 성수 플래그십에는 하루 약 400명이 찾고, 시향 때문에 오프라인 매장의 역할이 커지고 있습니다.</li>
+      <li><b>K-헤리티지는 이미 지갑을 엽니다.</b> 뮷즈 매출은 2024년 약 213억 원에서 2025년 약 413억 원, 2026년 상반기 218억 원(전년 동기 +90%)입니다. 뮤지엄숍에는 자개 디퓨저(35,000원)와 반가사유상 디퓨저 용기(17,000원)가 있습니다. 코스맥스는 국가유산청과 창경궁 앵도·덕수궁 오얏 향의 '단미르 궁궐 향수'를 냈습니다.</li>
+      <li><b>롤온은 더 이상 새롭지 않습니다.</b> 탬버린즈, 르라보, 바이레도, 이솝, 아로마티카가 이미 팔고 있고, 2026년 10월에는 불리도 롤온 오일 향수를 출시했습니다. 차별점은 제형이 아니라 <b>향의 공간 서사와 용기의 조형·휴대 방식</b>에서 나와야 합니다.</li>
+    </ul>
+    <div class="warnbox"><b>주의할 해석.</b> "전통 모티브면 팔린다"는 결론은 낼 수 없습니다. 뮷즈는 유물 인지도와 국가기관 신뢰를 등에 업고 있고, 가격도 1~3만 원대입니다. 출시 전 브랜드가 9만 원에 같은 반응을 얻는다는 근거는 아직 없습니다.</div>
+  </div>
+</section>
+
+<section id="comp">
+  <div class="wrap">
+    <div class="eyebrow">B · Competition</div>
+    <h2 class="sect">경쟁 제품: 온백은 어느 가격 칸에 서는가</h2>
+    <p class="sect-sub">경쟁군을 셋으로 나눴습니다. 같은 롤온이라도 무엇으로 불리느냐에 따라 비교 대상이 달라지기 때문입니다. 2회차에서 짚은 대로, "향수"로 부르면 르라보·바이레도의 지속력으로 채점받고, "아로마"로 부르면 만 원대 롤온의 가격으로 채점받습니다.</p>
+
+    <h3 class="block">ml당 가격 비교 (오일·롤온 제형)</h3>
+    <div class="bars">
+      <div class="bar"><span class="nm">르라보 리퀴드 밤 9ml</span><span class="tr"><span class="fl" style="width:100%"></span></span><span class="vl">15,833원</span></div>
+      <div class="bar"><span class="nm">바이레도 롤온 7.5ml</span><span class="tr"><span class="fl" style="width:92.6%"></span></span><span class="vl">14,667원</span></div>
+      <div class="bar me"><span class="nm">온백 10ml (잠정)</span><span class="tr"><span class="fl" style="width:56.2%"></span></span><span class="vl">8,900원</span></div>
+      <div class="bar"><span class="nm">탬버린즈 퍼퓸오일 6ml</span><span class="tr"><span class="fl" style="width:45.8%"></span></span><span class="vl">7,250원</span></div>
+      <div class="bar"><span class="nm">이솝 진저 플라이트 10ml</span><span class="tr"><span class="fl" style="width:28.4%"></span></span><span class="vl">4,500원</span></div>
+      <div class="bar"><span class="nm">아로마티카 롤온 9ml</span><span class="tr"><span class="fl" style="width:23.2%"></span></span><span class="vl">3,667원</span></div>
+      <div class="bar"><span class="nm">록시땅 롤온 EDT 10ml</span><span class="tr"><span class="fl" style="width:18.3%"></span></span><span class="vl">2,900원</span></div>
+      <div class="bar"><span class="nm">국내 아로마 롤온 10ml</span><span class="tr"><span class="fl" style="width:4.4%"></span></span><span class="vl">700~1,920원</span></div>
+    </div>
+
+    <h3 class="block">1. 직접 경쟁: 디자인·서사형 퍼퓸오일</h3>
+    <div class="tw"><table>
+      <thead><tr><th>브랜드·제품</th><th class="num">용량</th><th class="num">가격</th><th class="num">원/ml</th><th>포지셔닝 · 온백과의 관계</th></tr></thead>
+      <tbody>
+        <tr class="me"><td><b>온백 10ml 거치형 (잠정)</b></td><td class="num">10ml</td><td class="num">89,000원</td><td class="num">8,900</td><td>한국 옛 공간의 향 + 선추·향집 오브제. 천연 에센셜 오일</td></tr>
+        <tr><td>탬버린즈 퍼퓸 오일 보타리</td><td class="num">6ml</td><td class="num">43,500원</td><td class="num">7,250</td><td>식물성 오일 롤온, 매듭·보따리 서사. <b>가장 가까운 비교군</b>. 전성분에 '향료' 별도 표기</td></tr>
+        <tr><td>탬버린즈 퍼퓸 밤 카모</td><td class="num">6.5g</td><td class="num">46,500원</td><td class="num">—</td><td>고체향, 조형적 휴대 제품</td></tr>
+        <tr><td>탬버린즈 레더 웨어 (오일 케이스)</td><td class="num">—</td><td class="num">55,000원</td><td class="num">—</td><td>퍼퓸오일을 달고 다니는 가죽 액세서리. <b>온백 목걸이·키링의 직접 선례</b> (소개 당시 가격)</td></tr>
+        <tr><td>르라보 상탈 33 리퀴드 밤</td><td class="num">9ml</td><td class="num">142,500원</td><td class="num">15,833</td><td>식물성 오일 기반 롤온. 백화점 표시가</td></tr>
+        <tr><td>바이레도 롤온 퍼퓸 오일</td><td class="num">7.5ml</td><td class="num">110,000~121,000원</td><td class="num">14,667~16,133</td><td>니치 향의 휴대형</td></tr>
+        <tr><td>불리 롤온 오일 향수</td><td class="num">확인불가</td><td class="num">확인불가</td><td class="num">—</td><td>2026년 10월 국내 출시. 백화점·선물하기 동시 유통</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="block">2. 세계관 경쟁: 한국적 공간·헤리티지 향</h3>
+    <div class="tw"><table>
+      <thead><tr><th>브랜드·제품</th><th class="num">가격</th><th>포지셔닝 · 온백과의 관계</th></tr></thead>
+      <tbody>
+        <tr><td>취(Chwi) 고려청자 핸드&바디워시 EP.02 사찰</td><td class="num">확인불가</td><td>한국 공간의 향 + 청자 용기. <b>세계관이 가장 가깝습니다.</b> 공식몰·올리브영 유통</td></tr>
+        <tr><td>단미르 궁궐 향수 (코스맥스 × 국가유산청)</td><td class="num">확인불가</td><td>창경궁 앵도·덕수궁 오얏 향. 고궁박물관·궁 기념품숍 판매. "궁의 향"을 먼저 선점</td></tr>
+        <tr><td>뮷즈 자개 디퓨저 / 반가사유상 디퓨저 용기</td><td class="num">35,000원 / 17,000원</td><td>전통 소재 문화상품 선물. 가격대가 낮고 기관 신뢰가 큼</td></tr>
+        <tr><td>수향 Itaewon 565 디퓨저</td><td class="num">95,000원</td><td>장소명을 향으로 옮기는 홈 프래그런스. 거치형 선물의 간접 경쟁</td></tr>
+        <tr><td>그랑핸드 (규장 디퓨저, 멀티 퍼퓸 100ml)</td><td class="num">35,000원 (멀티퍼퓸)</td><td>규장각 착안 디퓨저. 각인·선물 포장</td></tr>
+        <tr><td>설화수 (북촌 플래그십)</td><td class="num">확인불가</td><td>한국 미학 공간 경험. 독립 향 제품 판매 여부는 확인불가</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="block">3. 가격 비교 함정: 아로마 롤온</h3>
+    <div class="tw"><table>
+      <thead><tr><th>브랜드·제품</th><th class="num">용량</th><th class="num">가격</th><th class="num">원/ml</th><th>메모</th></tr></thead>
+      <tbody>
+        <tr><td>이솝 진저 플라이트</td><td class="num">10ml</td><td class="num">45,000원</td><td class="num">4,500</td><td>식물성·에센셜 오일 롤온. 품절 표시</td></tr>
+        <tr><td>아로마티카 클리어포커스 롤온</td><td class="num">9ml</td><td class="num">33,000원</td><td class="num">3,667</td><td>아로마 사용 장면 중심</td></tr>
+        <tr><td>이브나잇 블렌디드 오일</td><td class="num">10ml</td><td class="num">19,200원</td><td class="num">1,920</td><td>위시버킷 기록가</td></tr>
+        <tr><td>바이오앤바이오 굿슬리핑 롤온</td><td class="num">10ml</td><td class="num">12,500원</td><td class="num">1,250</td><td>쿠팡. 수면 연상 네이밍</td></tr>
+        <tr><td>더허브스토리 아로마 롤링향수</td><td class="num">10ml</td><td class="num">7,000원</td><td class="num">700</td><td>저가 비교군</td></tr>
+      </tbody>
+    </table>
+    <caption>가격은 2026-10 공식몰·백화점 온라인·가격기록 사이트 표시가 기준입니다. 결제가와 재고는 다를 수 있습니다.</caption></div>
+
+    <div class="okbox"><b>읽는 법.</b> 온백 8,900원/ml는 "디자인 퍼퓸오일(7천 원대)"과 "수입 니치 롤온(1.5만 원대)" 사이에 있습니다. 아로마 롤온과 붙으면 5~10배 비싸 보입니다. 그래서 상세페이지와 광고에서 <b>"아로마"라는 단어를 첫 화면에 쓰지 않는 것</b>이 가격 방어의 첫 단계입니다. 탬버린즈와의 차이(+23%)는 용기 오브제와 한국 공간 서사로 설명해야 합니다.</div>
+  </div>
+</section>
+
+<section id="target">
+  <div class="wrap">
+    <div class="eyebrow">C · Target</div>
+    <h2 class="sect">타겟: 누가, 왜, 얼마에 사는가</h2>
+    <p class="sect-sub">타겟이 흐리면 그 위의 모든 결정이 흔들립니다. 데이터로 확인되는 구매 행동을 먼저 깔고, 그 위에 2회차에서 나온 세 상황을 올려 첫 타겟을 하나로 좁혔습니다.</p>
+
+    <h3 class="block">데이터로 확인되는 구매 행동</h3>
+    <div class="tw"><table>
+      <thead><tr><th>항목</th><th>수치</th><th>온백에 주는 의미</th></tr></thead>
+      <tbody>
+        <tr><td>여성 본인용 향수 구매 (최근 1년)</td><td class="num">43.9%</td><td>셀프 구매가 주류입니다. "나를 위한 향" 가설과 맞습니다</td></tr>
+        <tr><td>구매 빈도 · 1회 지출</td><td class="num">연 2.27회 · 12.27만 원</td><td>89,000원은 평균 1회 지출 안에 있습니다</td></tr>
+        <tr><td>30대 여성 1회 지출</td><td class="num">14.64만 원</td><td>10ml + 휴대형 번들(12~13만 원대)도 수용 범위입니다</td></tr>
+        <tr><td>구매 기준</td><td class="num">취향 67.9% · 이미지 39.0%</td><td>"취향 있는 사람으로 보이는 것"이 가격을 받칩니다 (2회차 사회적 과제)</td></tr>
+        <tr><td>성별 구매 비중 (S.I.VILLAGE)</td><td class="num">여 7 : 남 3</td><td>플랫폼 데이터라 전체 시장값은 아닙니다</td></tr>
+        <tr><td>남성 향수 사용률 · 평균 구매액</td><td class="num">70% · 약 11만 원</td><td>2차 타겟, 또는 선물 수신자입니다</td></tr>
+        <tr><td>향수 탐색 채널 (여성)</td><td class="num">백화점 39.4% · 올리브영 28.7% · 면세점 27.1%</td><td>온라인 단독 브랜드는 <b>시향 장벽</b>을 반드시 풀어야 합니다</td></tr>
+      </tbody>
+    </table>
+    <caption>오픈서베이 뷰티 트렌드 2025 (여성 15~59세 1,000명, 2024.12 조사 / 남성 20~59세 1,000명), 신세계인터내셔날 2023 리포트.</caption></div>
+
+    <h3 class="block">세 가지 상황, 그리고 첫 타겟</h3>
+    <div class="cols3">
+      <div class="persona" style="border-color:var(--accent)">
+        <div class="tag">1순위 · 첫 검증 타겟</div>
+        <h4>감정노동에 지친 30대 직장인 여성</h4>
+        <dl>
+          <dt>상황</dt><dd>하루 종일 남의 기분을 맞추고, 퇴근길에야 내 상태를 돌아봅니다.</dd>
+          <dt>지불 능력</dt><dd>향수 1회 14.6만 원. 89,000원이 부담스럽지 않습니다.</dd>
+          <dt>가장 아픈 점</dt><dd>"향수는 진해서 머리 아프고, 회사에서 뿌리기 눈치 보인다." "흔한 향은 싫다."</dd>
+          <dt>원하는 수단</dt><dd>나만 맡는 향을 책상과 목에 두고, 틈틈이 덧바르는 짧은 의식.</dd>
+        </dl>
+      </div>
+      <div class="persona">
+        <div class="tag">2순위 · 선물 구매자</div>
+        <h4>취향 있는 선물을 찾는 2040</h4>
+        <dl>
+          <dt>상황</dt><dd>연말·생일에 "센스 있다"는 말을 듣고 싶습니다. 뮷즈를 사 본 경험이 있습니다.</dd>
+          <dt>가장 아픈 점</dt><dd>"상대 취향을 몰라 향수는 실패가 두렵다."</dd>
+          <dt>원하는 수단</dt><dd>향을 고르지 않아도 되는 디스커버리 세트와 열어 보는 순간의 포장.</dd>
+          <dt>주의</dt><dd>출시가 1월로 밀리면 연말 대신 설 선물·새해 시점으로 메시지를 바꿉니다.</dd>
+        </dl>
+      </div>
+      <div class="persona">
+        <div class="tag">보류 · 이후 확장</div>
+        <h4>20대 취준생 · 육아 중인 엄마</h4>
+        <dl>
+          <dt>상황</dt><dd>버티는 시간이 길고, 나를 위해 산 기억이 없습니다.</dd>
+          <dt>보류 이유</dt><dd>취준생은 지불 능력에 비해 가격이 높고, 육아맘은 광고 타겟팅과 메시지가 1순위와 크게 다릅니다.</dd>
+          <dt>쓰는 법</dt><dd>첫 테스트에서 소재 한두 개로 반응만 봅니다.</dd>
+        </dl>
+      </div>
+    </div>
+
+    <h3 class="block">패인포인트 점수 (1순위 타겟 기준)</h3>
+    <div class="tw"><table>
+      <thead><tr><th>패인포인트</th><th class="num">강도</th><th class="num">온백이 푸는가</th><th>근거 · 수단</th></tr></thead>
+      <tbody>
+        <tr class="em"><td>진한 향은 머리 아프고, 사무실에서 눈치 보인다</td><td class="num">높음</td><td class="num">✅ 강함</td><td>2회차 경쟁 리뷰에서 가장 큰 불만. 롤온은 발향이 좁아 나만 맡습니다</td></tr>
+        <tr class="em"><td>남들과 같은 향은 싫다</td><td class="num">높음</td><td class="num">✅ 강함</td><td>구매 기준 1위가 취향(67.9%). 한국 옛 공간이라는 다른 데 없는 이야기</td></tr>
+        <tr><td>온라인으로는 향을 맡아 볼 수 없다</td><td class="num">높음</td><td class="num">⚠️ 설계 필요</td><td>탐색은 오프라인 우세. 유료 디스커버리 + 본품 교환권(페사드 35,000원 모델)이나 팝업으로 풀어야 합니다</td></tr>
+        <tr><td>향이 금방 날아간다</td><td class="num">중간</td><td class="num">⚠️ 재해석</td><td>약점이지만 휴대형 오브제와 "덧바르는 의식"으로 사용 방식 자체를 바꿉니다. 지속력을 약속하지는 않습니다</td></tr>
+        <tr><td>9만 원대 신생 브랜드는 못 믿겠다</td><td class="num">중간</td><td class="num">⚠️ 증거 필요</td><td>시딩 후기, 원료 증빙, 용기 제작 과정 콘텐츠로 신뢰를 쌓습니다</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="note"><b>카피 언어.</b> 문제는 고객의 말로 씁니다. 예: "향수 뿌리면 머리 아픈 사람", "나만 아는 향". 해결은 전문성으로 씁니다. 예: "천연 에센셜 오일을 식물성 오일에 녹인 퍼퓸 오일. 피부 가까이에서만 피어납니다." "리추얼", "웰니스" 같은 업계 공용어를 첫 문장에 쓰면 차별성이 사라집니다.</div>
+  </div>
+</section>
+
+<section id="position">
+  <div class="wrap">
+    <div class="eyebrow">D · Positioning & Test</div>
+    <h2 class="sect">포지셔닝과 3회차 검증 설계</h2>
+    <p class="sect-sub">오늘 미팅에서 정할 다섯 가지 안건(첫 상품, 사이트 역할, 전환 목표, 퍼포마 테스트, 제작 자료)에 이 조사를 대입한 제안입니다. 선택은 대표님 몫이고, 아래는 근거와 함께 정리한 선택지입니다.</p>
+
+    <h3 class="block">카테고리 이름 후보</h3>
+    <div class="tw"><table>
+      <thead><tr><th>후보</th><th>채점 기준이 되는 경쟁군</th><th>장점</th><th>위험</th></tr></thead>
+      <tbody>
+        <tr><td>천연 향수</td><td>르라보·바이레도·논픽션</td><td>검색량이 많고 이해가 빠릅니다</td><td>지속력으로 채점받아 3시간이 치명상이 됩니다</td></tr>
+        <tr><td>아로마 롤온</td><td>만 원대 아로마 롤온</td><td>천연 원료가 바로 전달됩니다</td><td>ml당 5~10배 비싸 보입니다</td></tr>
+        <tr class="me"><td><b>퍼퓸 오일</b></td><td>탬버린즈·바이레도 오일</td><td>업계에 이미 정착된 말이고, 가격 칸(7천~1.5만 원/ml)이 온백과 맞습니다</td><td>탬버린즈와 정면으로 비교됩니다</td></tr>
+        <tr class="me"><td><b>몸에 지니는 향 (향 오브제)</b></td><td>뮷즈·탬버린즈 레더 웨어</td><td>지속력을 묻지 않게 되고, 선추라는 전통과 바로 이어집니다</td><td>처음 보는 말이라 설명 비용이 듭니다</td></tr>
+      </tbody>
+    </table></div>
+    <p><b>제안:</b> 광고 테스트에서 <b>"퍼퓸 오일"과 "몸에 지니는 향"</b> 두 문구를 같은 소재·같은 랜딩에 붙여 A/B로 비교합니다. "향수"와 "아로마"는 위험이 확인된 이름이라 테스트 예산을 쓰지 않는 편이 낫습니다.</p>
+
+    <h3 class="block">사이트 역할과 순서</h3>
+    <ol class="steps">
+      <li><b>지금 만들 것은 단일 랜딩 페이지 하나입니다.</b> 브랜드 한 문장, 공간별 향 3종, 오브제 렌더, 가격, 출시 알림 신청 폼으로 구성합니다. 홈페이지 전체는 SKU와 가격이 확정된 뒤에 만듭니다.</li>
+      <li><b>전환 목표는 "가격을 본 뒤의 출시 알림 신청"입니다.</b> 가격을 숨긴 채 받은 신청은 수요가 아니라 호기심입니다. 결제 약속은 생산 일정이 확정되기 전에는 받지 않습니다.</li>
+      <li><b>더 강한 신호는 소액 예약금입니다.</b> 일정이 확정된다면 1만 원 환불 가능 예약금이나 디스커버리 세트 선결제가 "좋아요"보다 정확합니다.</li>
+    </ol>
+
+    <h3 class="block">퍼포마 테스트 설계 초안</h3>
+    <div class="tw"><table>
+      <thead><tr><th>설계 항목</th><th>제안</th></tr></thead>
+      <tbody>
+        <tr><td>타겟</td><td>국내, 여성 27~39세. 관심사: 니치 향수, 탬버린즈, 전시·공예, 29CM. 상세 타겟보다 소재로 고객을 고르게 합니다</td></tr>
+        <tr><td>변수 (한 번에 하나)</td><td>① 카테고리 이름: 퍼퓸 오일 vs 몸에 지니는 향 → ② 가격 표시: 89,000원 단품 vs 129,000원 번들</td></tr>
+        <tr><td>소재</td><td>공간 이야기형 / 오브제 착용 장면형 / "향수가 머리 아픈 사람"형 문제 제기 — 3종</td></tr>
+        <tr><td>예산</td><td>셀당 클릭 300회 이상 확보를 기준으로 셀당 약 50~80만 원, 2주. 한국 뷰티 CPC 평균은 확인불가라서 첫 3일 실측 CPC로 다시 계산합니다</td></tr>
+        <tr><td>측정 단계</td><td>노출 → 클릭(CTR) → 랜딩 스크롤 50% → 가격 영역 도달 → 알림 신청 → (예약금)</td></tr>
+        <tr><td>계속·중단 기준 (사전 기록)</td><td>예: 가격을 본 방문자의 알림 신청률이 5% 이상이면 계속, 2% 미만이면 메시지·가격을 바꿉니다. 수치는 오늘 대표님과 합의해 시작 전에 적어 둡니다</td></tr>
+        <tr><td>손익 연결</td><td>알림 신청 1건 원가(CPL) × 실제 구매 전환율이 F섹션의 <b>주문당 손익분기 광고비(약 43,800원)</b>보다 낮아야 본 판매에서 살아남습니다</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="block">제작에 필요한 자료 체크리스트</h3>
+    <ul class="clean">
+      <li>최신 용기·패키지 시안과 3D 렌더 (거치형, 목걸이, 키링) — <span class="badge b-warn">확정 여부 표시</span></li>
+      <li>향별 이름, 공간 이야기, 노트 설명 3종 이상</li>
+      <li>전성분과 알레르기 유발성분 함량표 (제조사에서 받기)</li>
+      <li>용량, 판매가, 출시 일정 — 미확정이면 "예정"으로 표기</li>
+      <li>브랜드 로고, 도메인·인스타 계정 개설 여부, 사용 가능한 무드 이미지</li>
+      <li>2회차 숙제: 시딩 후보 인플루언서 5개 이상 (필라테스·요가 강사, 공예·전시 계정)</li>
+    </ul>
+  </div>
+</section>
+
+<section id="reg">
+  <div class="wrap">
+    <div class="eyebrow">E · Regulation</div>
+    <h2 class="sect">규제: 랜딩과 패키지를 만들기 전에 막아 둘 것</h2>
+    <p class="sect-sub">"향수가 아니다"라는 브랜드 언어와 법적 분류는 다릅니다. 피부에 바르는 롤온이라면 화장품, 그중에서도 방향용 제품류일 가능성이 높습니다.</p>
+    <div class="tw"><table>
+      <thead><tr><th>쟁점</th><th>내용</th><th>온백 대응</th></tr></thead>
+      <tbody>
+        <tr><td>제품 분류</td><td>화장품 해당 여부는 사용 목적과 방법으로 판단합니다. 피부 도포형 롤온은 방향용 제품류 가능성이 높습니다</td><td>책임판매업자 등록 상태를 확인합니다. 목걸이가 <b>피부에 바르지 않고 공기 중으로 발향하는 구조</b>라면 생활화학제품(방향제) 기준을 따로 검토해야 합니다</td></tr>
+        <tr><td>알레르기 유발성분 25종</td><td>씻어내지 않는 제품에서 0.001% 초과 시 '향료'가 아닌 개별 성분명 표시. 천연 오일에서 나온 리모넨·리날룰·시트랄 등도 대상입니다</td><td>유자 오일 같은 원료명만 보지 말고 제조사에서 성분별 최종 함량표를 받습니다. 최신 고시(2026.8.5 개정) 별표와 대조가 필요합니다</td></tr>
+        <tr><td>소용량 표시 예외</td><td>10ml 이하는 일부 표시를 줄일 수 있지만, 생략한 성분을 확인할 경로(전화·홈페이지)를 적어야 합니다</td><td>외부 포장과 상세페이지에 전성분과 주의사항을 모두 둡니다</td></tr>
+        <tr><td>광고 금지 표현</td><td>의약품 오인 표현과 실증 없는 사실 주장은 금지됩니다</td><td>불면, 두통, 불안, 호르몬, PMS, 스트레스 감소, 숙면 유도는 쓰지 않습니다. "천연이라 무해"도 금지합니다</td></tr>
+        <tr><td>쓸 수 있는 표현</td><td>향의 감각과 사용법, 증빙 가능한 원료 사실</td><td>"오래된 나무를 떠올리는 향", "손목에 굴려 쓰는 퍼퓸 오일", "천연 에센셜 오일 사용"(증빙 보유 시)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="pnl">
+  <div class="wrap">
+    <div class="eyebrow">F · ROAS 하방</div>
+    <h2 class="sect">ROAS 몇 %부터 돈이 남는가</h2>
+    <p class="sect-sub">10ml 판매가 89,000원, 원가 26,000원(2회차 발언) 기준입니다. 부가세를 떼어 내고, 주문마다 드는 제경비와 월 고정비, 법인세까지 반영했습니다. 아래 입력값을 바꾸면 모든 표가 바로 다시 계산됩니다.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="n" id="k-bep1">203<small>%</small></div><div class="l">손익분기 ROAS<br>(광고비만 회수, 고정비 제외)</div></div>
+      <div class="stat"><div class="n" id="k-bep2">264<small>%</small></div><div class="l">손익분기 ROAS<br>(월 고정비까지 회수)</div></div>
+      <div class="stat"><div class="n" id="k-floor">295<small>%</small></div><div class="l"><b>권장 하방</b><br>목표 순이익률을 남기는 ROAS</div></div>
+      <div class="stat"><div class="n" id="k-cm">54.1<small>%</small></div><div class="l">광고 전 공헌이익률<br>(공급가 대비)</div></div>
+    </div>
+
+    <h3 class="block">1. 가정값 (직접 수정 가능)</h3>
+    <div class="calc">
+      <label>판매가 (VAT 포함)<input type="number" id="i-price" value="89000" step="1000"></label>
+      <label>제품 원가 (VAT 별도)<input type="number" id="i-cogs" value="26000" step="500"></label>
+      <label>포장재·인서트·쇼핑백<input type="number" id="i-pack" value="2000" step="100"></label>
+      <label>택배비 (무료배송 가정)<input type="number" id="i-ship" value="3500" step="100"></label>
+      <label>PG 결제수수료 (%)<input type="number" id="i-pg" value="3.4" step="0.1"></label>
+      <label>시향 샘플·사은품<input type="number" id="i-sample" value="1000" step="100"></label>
+      <label>반품·불량 충당 (공급가 %)<input type="number" id="i-ret" value="2" step="0.5"></label>
+      <label>월 광고비<input type="number" id="i-ad" value="5000000" step="500000"></label>
+      <label>월 고정 제경비<input type="number" id="i-fixed" value="1500000" step="100000"></label>
+      <label>법인세+지방소득세 (%)<input type="number" id="i-tax" value="11" step="0.5"></label>
+      <label>목표 순이익률 (%)<input type="number" id="i-target" value="5" step="1"></label>
+    </div>
+    <p class="hint">월 고정 제경비 150만 원 = 쇼핑몰 솔루션·도메인, 세무기장, 콘텐츠 소품·촬영 소모품, 소프트웨어 구독 등을 묶은 가정치입니다. 인건비와 대표 급여는 넣지 않았습니다. 실제 값으로 바꿔 주세요.</p>
+
+    <h3 class="block">2. 주문 1건 단위 구조</h3>
+    <div class="tw"><table id="t-unit"><thead><tr><th>항목</th><th class="num">금액</th><th class="num">공급가 대비</th><th>메모</th></tr></thead><tbody></tbody></table></div>
+
+    <h3 class="block">3. ROAS별 월 손익 (월 광고비 기준)</h3>
+    <div class="tw"><table id="t-roas"><thead><tr>
+      <th class="num">ROAS</th><th class="num">결제매출<br><small>VAT 포함</small></th><th class="num">주문 수</th><th class="num">부가세<br><small>매출세액</small></th><th class="num">순매출<br><small>공급가</small></th><th class="num">원가+제경비</th><th class="num">광고비</th><th class="num">고정비</th><th class="num">세전이익</th><th class="num">법인세</th><th class="num">순이익</th><th class="num">순이익률</th>
+    </tr></thead><tbody></tbody></table>
+    <caption>ROAS = 광고로 발생한 결제금액(VAT 포함) ÷ 광고비. 메타 광고관리자가 보여 주는 구매 전환값과 같은 기준입니다. 부가세 칸은 매출세액이고, 원가·포장·PG 수수료의 매입세액은 공제된다고 보고 비용을 VAT 별도로 잡았습니다.</caption></div>
+
+    <h3 class="block">4. 판매가 × 원가 조합별 손익분기 ROAS</h3>
+    <p>가격과 원가율이 하방을 얼마나 움직이는지 보는 표입니다. 고정비는 빼고, 광고비만 회수하는 ROAS입니다. 색이 진할수록 광고 효율 부담이 큽니다.</p>
+    <div class="tw"><table id="t-matrix"><thead></thead><tbody></tbody></table>
+    <caption>2회차에서 정한 원가율 기준은 최대 25%, 목표 20% 이하입니다. 현재 10ml는 약 29%(26,000 ÷ 89,000)로 기준을 넘습니다.</caption></div>
+
+    <div class="warnbox"><b>해석.</b> 지금 구조(89,000원 / 원가 26,000원)에서는 <b>ROAS 200%는 광고비만 겨우 회수하는 선</b>입니다. 고정비까지 넣으면 약 260%, 순이익 5%를 남기려면 <b>약 300%가 하방</b>입니다. 메타 신규 브랜드 콜드 트래픽에서 첫 달 ROAS 300%는 쉽지 않은 수치입니다. 따라서 하방을 낮추는 수단을 함께 검토하는 편이 현실적입니다.
+      <ul class="clean" style="margin-top:10px">
+        <li><b>객단가를 올립니다.</b> 디스커버리 세트나 10ml+목걸이 번들처럼 장바구니를 키우면, 택배비와 포장비가 주문 1건에 한 번만 붙습니다. 예를 들어 129,000원 번들(원가 38,000원 가정)은 손익분기 ROAS가 약 197%로, 단품과 비슷한 효율로 더 많은 이익을 남깁니다.</li>
+        <li><b>원가율 25%를 맞춥니다.</b> 원가를 22,000원으로 낮추면 광고비 회수선이 203%에서 186%로 내려갑니다(4번 표).</li>
+        <li><b>대기 명단을 재구매·리타깃 풀로 씁니다.</b> 출시일 오픈 매출은 광고비가 거의 들지 않아 블렌디드 ROAS를 끌어올립니다.</li>
+      </ul>
+    </div>
+    <div class="note"><b>계산에서 뺀 것.</b> 금형·초도 생산 같은 선투자, 재고 보유 비용, 인플루언서 시딩 원가, 인건비는 넣지 않았습니다. 개인사업자라면 세금은 종합소득세 누진세율(지방세 포함 6.6~49.5%)을 적용해야 합니다. 메타 광고비에 붙는 부가세의 공제 여부는 세무사에게 확인이 필요합니다.</div>
+  </div>
+</section>
+
+<section id="unknown">
+  <div class="wrap">
+    <div class="eyebrow">Unknowns · Next</div>
+    <h2 class="sect">확인불가 항목과 다음 액션</h2>
+    <p class="sect-sub">지어내지 않고 남긴 것들입니다. 대부분은 리서치가 아니라 온백의 직접 테스트로만 채울 수 있습니다.</p>
+    <div class="cols2">
+      <div class="card">
+        <h4>공개 자료로 확인불가</h4>
+        <ul class="clean">
+          <li>롤온·퍼퓸오일·고체향 세그먼트의 국내 시장 규모와 성장률</li>
+          <li>국내 향수 구매자 전체의 연령·성별 구성비</li>
+          <li>향수 선물 비중과 연말 매출 집중도</li>
+          <li>천연·클린 향에 대한 추가 지불 의향</li>
+          <li>지속력·가격·시향 불가 각각의 구매 포기율</li>
+          <li>한국 메타 뷰티·향수 광고의 평균 CPM·CPC·CTR·전환율·ROAS</li>
+          <li>취(Chwi)·단미르 궁궐 향수·불리 롤온의 현재 가격</li>
+          <li>온백의 최종 법적 분류와 처방별 표시 대상 성분</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>3회차에서 최혜린 대표님께 확인할 것</h4>
+        <ul class="clean">
+          <li>2회차 이후 바뀐 점: 출시 일정, 금형·생산 진행, 확정 SKU</li>
+          <li>원가 26,000원에 용기·충진·라벨·패키지가 모두 들어갔는지, 목걸이·키링의 원가</li>
+          <li>사업자 형태(법인·개인)와 화장품 책임판매업 등록 여부</li>
+          <li>도메인, 인스타 계정, 쇼핑몰 솔루션 보유 여부</li>
+          <li>테스트에 쓸 수 있는 월 광고 예산과 감당 가능한 손실 한도</li>
+          <li>계속·중단 기준 수치 합의 (시작 전에 기록)</li>
+        </ul>
+      </div>
+    </div>
+    <h3 class="block">다음 액션 순서</h3>
+    <ol class="steps">
+      <li>원가 구성을 다시 확인하고, 원가율 25% 이하가 가능한 구성(용량·소재)을 찾습니다.</li>
+      <li>카테고리 이름 두 개와 가격 두 개를 정하고, 계속·중단 기준을 적습니다.</li>
+      <li>단일 랜딩과 출시 알림 폼을 만들고, 소재 3종으로 2주 테스트합니다.</li>
+      <li>목걸이·키링 샘플로 시딩하고, 지속력 반응을 구매 이유와 거절 이유로 나눠 기록합니다.</li>
+      <li>테스트에서 나온 실측 CPC·전환율을 F섹션 계산기에 넣어 하방을 다시 계산한 뒤 생산 수량을 정합니다.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="glossary">
+  <div class="wrap">
+    <div class="eyebrow">Glossary</div>
+    <h2 class="sect">용어 사전</h2>
+    <div class="gloss">
+      <div class="row"><div class="t">ROAS<small>광고비 대비 매출</small></div><div class="d">광고로 생긴 매출 ÷ 광고비. <em>예: 100만 원 써서 300만 원 팔면 300%.</em> 매출 기준이라 이익을 보여 주지 않으므로, 손익분기 ROAS와 함께 봐야 합니다.</div></div>
+      <div class="row"><div class="t">손익분기 ROAS<small>ROAS 하방</small></div><div class="d">이 아래로 떨어지면 팔수록 손해인 ROAS. 결제금액 ÷ 주문당 광고 전 공헌이익으로 구합니다. <em>온백 현재 구조: 89,000 ÷ 43,765 = 203%.</em></div></div>
+      <div class="row"><div class="t">공급가<small>VAT 제외 매출</small></div><div class="d">고객이 낸 돈에서 부가세 10%를 뺀 금액. 판매가 ÷ 1.1. <em>89,000원 → 80,909원.</em> 부가세는 회사 돈이 아니라 국세청에 내는 돈입니다.</div></div>
+      <div class="row"><div class="t">공헌이익<small>contribution margin</small></div><div class="d">공급가에서 주문마다 드는 변동비(원가·포장·택배·수수료 등)를 뺀 금액. 이 돈으로 광고비, 고정비, 세금을 감당합니다.</div></div>
+      <div class="row"><div class="t">제경비<small>판매 부대비용</small></div><div class="d">원가 외에 판매에 드는 비용. 주문마다 드는 변동 제경비(포장·택배·PG 수수료·반품)와 매달 나가는 고정 제경비(솔루션·기장료 등)로 나눠 봤습니다.</div></div>
+      <div class="row"><div class="t">원가율<small>cost ratio</small></div><div class="d">원가 ÷ 판매가. 2회차 기준은 최대 25%, 목표 20% 이하. <em>현재 26,000 ÷ 89,000 = 29%.</em></div></div>
+      <div class="row"><div class="t">CPA · CPL<small>획득당 비용</small></div><div class="d">구매 1건(CPA) 또는 신청 1건(CPL)을 얻는 데 든 광고비. 주문당 공헌이익보다 CPA가 낮아야 이익이 납니다.</div></div>
+      <div class="row"><div class="t">TAM · SAM · SOM<small>시장 범위</small></div><div class="d">전체 시장 → 우리가 닿을 수 있는 시장 → 실제로 이길 수 있는 진입 시장. 진입 시장은 우리 수단으로 잘라야 합니다.</div></div>
+      <div class="row"><div class="t">SKU<small>Stock Keeping Unit</small></div><div class="d">판매 상품을 구분하는 최소 단위. <em>향 3종 × 10ml·목걸이 2형태 = 6 SKU.</em></div></div>
+      <div class="row"><div class="t">책임판매업자<small>화장품법</small></div><div class="d">화장품을 시장에 내놓고 품질·안전을 책임지는 사업자. 화장품을 팔려면 직접 등록하거나 등록 업체를 통해야 합니다.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <h3>방법론 &amp; 주요 출처</h3>
+    <p>2레인 교차검증: <strong>codex</strong>(웹검색, 공식몰·정부·1차자료 중심) + <strong>Claude</strong>(웹검색, 언론·실무 보강). 고객 정보는 1·2회차 컨설팅 기록과 3회차 협업 브리프를 기준으로 했습니다. 온백의 가격·원가·용량은 기획 단계의 잠정값입니다.</p>
+    <ol>
+      <li>유로모니터 2024 글로벌 뷰티 시장 하이라이트: euromonitor.com/newsroom/press-releases/september-2025</li>
+      <li>국내 향수 시장 1조 1,800억 원·29CM +84%: v.daum.net/v/20260117124142853, edaily.co.kr/News/Read?newsId=04532966645478440</li>
+      <li>오픈서베이 뷰티 트렌드 2025 (여성·남성): blog.opensurvey.co.kr/article/beauty-2025-2, /article/mens-beauty-2025-2</li>
+      <li>신세계인터내셔날 2023 연간 리포트: magazine.hankyung.com/business/article/202401233757b</li>
+      <li>뮷즈 매출: dailian.co.kr/news/view/1694005, newsis.com/view/NISI20260123_0021137052, herald 2026-07-08</li>
+      <li>단미르 궁궐 향수·헤리티지 굿즈: biz.sbs.co.kr/amp/article/20000259316</li>
+      <li>탬버린즈 공식몰: tamburins.com/kr/item/12001519, /12001154</li>
+      <li>르라보 리퀴드 밤: lelabofragrances.co.kr/classic-collection/santal-33/liquid-balm, lotteon.com</li>
+      <li>바이레도 롤온: byredo.com/ko_kr, selfridges.com/KR, lotteon.com</li>
+      <li>이솝·아로마티카·록시땅·페사드·논픽션·그랑핸드·수향 공식몰 및 무신사</li>
+      <li>국립박물관 뮤지엄숍: museumshop.or.kr</li>
+      <li>불리 롤온 오일 향수 출시: yna.co.kr/amp/view/AKR20261007054200030</li>
+      <li>알레르기 유발성분 표시: 식약처 FAQ, kcia.or.kr/cid/cs/faq.php, mfds.go.kr/brd/m_211/view.do?seq=14985</li>
+      <li>화장품 표시·광고 지침: mfds.go.kr/brd/m_1060/view.do?seq=15700, 화장품법 시행규칙 (law.go.kr)</li>
+      <li>2026 법인세율 1%p 인상: hankyung.com/article/2025120296811</li>
+      <li>토스페이먼츠 신용카드 일반 수수료 3.4%: tosspayments.com/about/fee</li>
+    </ol>
+    <p class="disc">본 리포트는 2026-10-29 기준 공개 소스 조사이며 법률·세무 자문이 아닙니다. 가격은 조사 시점의 표시가이고, 손익표의 포장·택배·고정비·반품률은 가정치입니다. 화장품 분류, 성분 표시, 세금은 출시 전 식약처 고시 원문과 세무사를 통해 반드시 다시 확인해야 합니다. · NoFail Design 리서치</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var won = function(n){ return (n < 0 ? '−' : '') + Math.round(Math.abs(n)).toLocaleString('ko-KR'); };
+  var pct = function(n){ return (n * 100).toFixed(1) + '%'; };
+  var v = function(id){ var x = parseFloat($(id).value); return isNaN(x) ? 0 : x; };
+
+  function unit(price, cogs){
+    var sup = price / 1.1;
+    var c = {
+      cogs: cogs, pack: v('i-pack'), ship: v('i-ship'),
+      pg: price * v('i-pg') / 100, sample: v('i-sample'), ret: sup * v('i-ret') / 100
+    };
+    var varCost = c.cogs + c.pack + c.ship + c.pg + c.sample + c.ret;
+    return { sup: sup, vat: price - sup, c: c, varCost: varCost, cm: sup - varCost };
+  }
+
+  // 세후 순이익률이 target이 되는 ROAS를 이분법으로 찾는다
+  function solveRoas(price, cm, ad, fixed, tax, target){
+    var net = function(r){
+      var n = ad * r / price, rev = n * price / 1.1;
+      var op = n * cm - ad - fixed;
+      return (op - Math.max(0, op) * tax) - rev * target;
+    };
+    var lo = 0.1, hi = 50;
+    if (net(hi) < 0) return Infinity;
+    for (var i = 0; i < 60; i++){ var m = (lo + hi) / 2; if (net(m) < 0) lo = m; else hi = m; }
+    return hi;
+  }
+
+  function render(){
+    var price = v('i-price'), cogs = v('i-cogs'), ad = v('i-ad'), fixed = v('i-fixed');
+    var tax = v('i-tax') / 100, target = v('i-target') / 100;
+    var u = unit(price, cogs);
+
+    var bep1 = price / u.cm;
+    var bep2 = solveRoas(price, u.cm, ad, fixed, tax, 0);
+    var floor = solveRoas(price, u.cm, ad, fixed, tax, target);
+    $('k-bep1').innerHTML = Math.round(bep1 * 100) + '<small>%</small>';
+    $('k-bep2').innerHTML = (isFinite(bep2) ? Math.round(bep2 * 100) : '—') + '<small>%</small>';
+    $('k-floor').innerHTML = (isFinite(floor) ? Math.round(floor * 100) : '—') + '<small>%</small>';
+    $('k-cm').innerHTML = (u.cm / u.sup * 100).toFixed(1) + '<small>%</small>';
+
+    var rows = [
+      ['판매가 (고객 결제액)', price, null, '부가세 포함'],
+      ['− 부가세 (매출세액)', -u.vat, null, '판매가 ÷ 11, 국세청에 내는 돈'],
+      ['= 순매출 (공급가)', u.sup, 1, '실제 회사 매출'],
+      ['− 제품 원가', -u.c.cogs, u.c.cogs / u.sup, '용기·내용물·라벨·충진'],
+      ['− 포장재·인서트', -u.c.pack, u.c.pack / u.sup, '박스·완충재·쇼핑백'],
+      ['− 택배비', -u.c.ship, u.c.ship / u.sup, '무료배송 기준'],
+      ['− PG 결제수수료', -u.c.pg, u.c.pg / u.sup, '결제액 × ' + v('i-pg') + '%'],
+      ['− 시향 샘플·사은품', -u.c.sample, u.c.sample / u.sup, '향 제품 재구매 장치'],
+      ['− 반품·불량 충당', -u.c.ret, u.c.ret / u.sup, '공급가 × ' + v('i-ret') + '%'],
+      ['= 광고 전 공헌이익', u.cm, u.cm / u.sup, '이 금액으로 광고비·고정비·세금을 감당'],
+      ['손익분기 광고비 (CPA 상한)', u.cm, null, '주문 1건에 이 이상 쓰면 적자']
+    ];
+    $('t-unit').tBodies[0].innerHTML = rows.map(function(r, i){
+      var strong = r[0].indexOf('=') === 0 || i === rows.length - 1;
+      return '<tr' + (strong ? ' class="em"' : '') + '><td>' + r[0] + '</td><td class="num">' + won(r[1]) + '원</td><td class="num">' +
+        (r[2] === null ? '' : pct(Math.abs(r[2]))) + '</td><td class="hint">' + r[3] + '</td></tr>';
+    }).join('');
+
+    var steps = [1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 8];
+    $('t-roas').tBodies[0].innerHTML = steps.map(function(r){
+      var gross = ad * r, n = gross / price, vat = gross - gross / 1.1, sup = gross / 1.1;
+      var vc = n * u.varCost, op = sup - vc - ad - fixed, t = Math.max(0, op) * tax, net = op - t;
+      var cls = net < 0 ? 'neg' : (net / sup >= target ? 'pos' : 'mid');
+      return '<tr class="' + cls + '"><td class="num"><b>' + Math.round(r * 100) + '%</b></td><td class="num">' + won(gross) +
+        '</td><td class="num">' + Math.round(n).toLocaleString('ko-KR') + '</td><td class="num">' + won(vat) + '</td><td class="num">' + won(sup) +
+        '</td><td class="num">' + won(vc) + '</td><td class="num">' + won(ad) + '</td><td class="num">' + won(fixed) +
+        '</td><td class="num">' + won(op) + '</td><td class="num">' + won(t) + '</td><td class="num"><b>' + won(net) +
+        '</b></td><td class="num">' + pct(net / sup) + '</td></tr>';
+    }).join('');
+
+    var prices = [59000, 69000, 79000, 89000, 99000, 119000];
+    var costs = [14000, 18000, 22000, 26000, 30000];
+    var head = '<tr><th>원가 \\ 판매가</th>' + prices.map(function(p){ return '<th class="num">' + won(p) + '</th>'; }).join('') + '</tr>';
+    $('t-matrix').tHead.innerHTML = head;
+    $('t-matrix').tBodies[0].innerHTML = costs.map(function(c){
+      return '<tr><th>' + won(c) + '원</th>' + prices.map(function(p){
+        var b = p / unit(p, c).cm;
+        var lvl = b < 1.8 ? 'h1' : b < 2.2 ? 'h2' : b < 2.8 ? 'h3' : 'h4';
+        var cur = (p === price && c === cogs) ? ' cur' : '';
+        return '<td class="num ' + lvl + cur + '">' + Math.round(b * 100) + '%<small>원가율 ' + Math.round(c / p * 100) + '%</small></td>';
+      }).join('') + '</tr>';
+    }).join('');
+  }
+
+  document.querySelectorAll('.calc input').forEach(function(el){ el.addEventListener('input', render); });
+  render();
+})();
+</script>
+</body>
+</html>
