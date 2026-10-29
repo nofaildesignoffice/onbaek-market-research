@@ -330,7 +330,7 @@
   <div class="wrap">
     <div class="eyebrow">B-2 · Price Map</div>
     <h2 class="sect">4분면 포지셔닝: 제품력 × 가격경쟁력</h2>
-    <p class="sect-sub">가로축은 가격경쟁력입니다. 오른쪽으로 갈수록 ml당 가격이 쌉니다. 세로축은 제품력으로, 원료·조향·용기·브랜드 신뢰·지속력 다섯 항목을 각 2점 만점으로 매긴 10점 척도입니다. 온백은 출시 전이라 점수가 가설이고, 오브제가 실제로 어떤 완성도로 나오느냐에 따라 세로로 움직입니다.</p>
+    <p class="sect-sub">가로축은 가격경쟁력으로, 고객이 실제로 보는 <b>판매가</b> 기준입니다. 오른쪽으로 갈수록 쌉니다. 세로축은 제품력으로, 원료·조향·용기·브랜드 신뢰·지속력 다섯 항목을 각 2점 만점으로 매긴 10점 척도입니다. 온백은 출시 전이라 점수가 가설이고, 오브제가 실제로 어떤 완성도로 나오느냐에 따라 세로로 움직입니다.</p>
 
     <div class="qlegend">
       <span><svg width="14" height="14"><path d="M7 1 L13 7 L7 13 L1 7Z" fill="#111827"/></svg>온백 (가설)</span>
@@ -342,25 +342,26 @@
       <svg id="qsvg" viewBox="0 0 760 540" role="img" aria-label="제품력과 ml당 가격으로 본 롤온 향 제품 4분면 지도"></svg>
       <div class="qtip" id="qtip" hidden></div>
     </div>
-    <p class="hint">가로축은 로그 눈금입니다(700원~16,000원/ml를 한 화면에 담기 위함). 4분면 경계선은 ml당 5,000원과 제품력 5점입니다. 온백의 점선은 가설 범위입니다. 신뢰를 쌓으면 위로 7.5~8점, 오브제 완성도와 신뢰에 실패하면 아래로 4.5점까지 움직입니다. 점에 마우스를 올리면 항목별 점수가 보입니다.</p>
+    <p class="hint">가로축은 로그 눈금입니다(7,000원~142,500원을 한 화면에 담기 위함). 4분면 경계선은 판매가 5만 원과 제품력 5점입니다. 용량이 제품마다 달라(6~10ml) 마우스를 올리면 용량도 함께 보입니다. 온백의 점선은 가설 범위입니다. 신뢰를 쌓으면 위로 7.5~8점, 오브제 완성도와 신뢰에 실패하면 아래로 4.5점까지 움직입니다. 점에 마우스를 올리면 항목별 점수가 보입니다.</p>
 
     <div class="cols2" style="margin-top:22px">
-      <div class="card fill"><h4>프리미엄 정당화 (왼쪽 위)</h4><p>비싸지만 제품력으로 가격을 설명하는 칸입니다. 르라보, 바이레도, 탬버린즈가 여기 있습니다. <b>온백이 서야 할 칸</b>입니다.</p></div>
-      <div class="card fill"><h4>가성비 강자 (오른쪽 위)</h4><p>합리적인 가격에 제품력도 받쳐 주는 칸입니다. 이솝 진저 플라이트가 대표적입니다. 브랜드 신뢰가 가격 저항을 낮춥니다.</p></div>
+      <div class="card fill"><h4>프리미엄 정당화 (왼쪽 위)</h4><p>5만 원 이상인데 제품력으로 가격을 설명하는 칸입니다. 르라보(142,500원)와 바이레도(110,000원)가 여기 있고, <b>온백(89,000원)도 이 칸에 섭니다.</b></p></div>
+      <div class="card fill"><h4>가성비 강자 (오른쪽 위)</h4><p>5만 원 아래에 제품력도 받쳐 주는 칸입니다. 탬버린즈(43,500원)와 이솝(45,000원)이 여기 있습니다. 브랜드 신뢰가 높아 첫 구매 문턱이 낮습니다.</p></div>
       <div class="card fill"><h4>가격 미정당화 (왼쪽 아래)</h4><p>비싼데 그만한 이유가 보이지 않는 칸입니다. 오브제 완성도가 떨어지거나 신뢰를 못 쌓으면 <b>온백이 미끄러질 수 있는 칸</b>입니다.</p></div>
       <div class="card fill"><h4>저가 경쟁 (오른쪽 아래)</h4><p>만 원대 아로마 롤온이 모인 칸입니다. "아로마"라는 이름을 쓰는 순간 고객은 온백을 이 칸과 비교합니다.</p></div>
     </div>
 
-    <div class="warnbox"><b>지도에서 보이는 것.</b> 온백(6.5점)은 탬버린즈(7.5점)보다 <b>ml당 23% 비싼데 제품력 점수는 1점 낮습니다.</b> 차이는 거의 브랜드 신뢰(0.5 vs 2)와 지속력에서 납니다. 원료 점수는 온백이 더 높고, 용기 점수는 같습니다. 그러니 할 일은 두 가지입니다.
+    <div class="warnbox"><b>지도에서 보이는 것.</b> 판매가로 보면 온백의 비교 대상이 바뀝니다. 고객 눈에 89,000원은 <b>탬버린즈·이솝(4만 원대)의 두 배</b>이고, <b>바이레도(110,000원)보다 21,000원 싼 가격</b>입니다. 즉 고객은 온백에 수입 니치급 기대를 겁니다. 그런데 지금 제품력 가설(6.5점)은 바이레도(7.5점)보다 1점, 탬버린즈(7.5점)보다도 1점 낮습니다. 차이는 거의 브랜드 신뢰(0.5점 대 2점)와 지속력에서 납니다. 원료 점수는 온백이 더 높고, 용기 점수는 탬버린즈와 같습니다.
       <ul class="clean" style="margin-top:10px">
-        <li><b>신뢰 점수를 출시 전에 쌓습니다.</b> 시딩 후기, 원료 증빙, 용기 제작 과정 콘텐츠로 0.5점을 1.5점까지 올리면 탬버린즈와 같은 높이(7.5점)에 섭니다.</li>
+        <li><b>신뢰 점수를 출시 전에 쌓습니다.</b> 시딩 후기, 원료 증빙, 용기 제작 과정 콘텐츠로 0.5점을 1.5점까지 올리면 바이레도와 같은 높이(7.5점)에 섭니다. 89,000원이 "바이레도보다 싼 한국 니치"로 읽히기 시작하는 지점입니다.</li>
+        <li><b>4만 원대 진입 상품을 둡니다.</b> 2~3ml 휴대형을 4만 원대로 잡으면 탬버린즈·이솝과 같은 칸에서 첫 구매를 받고, 10ml는 재구매·선물 상품이 됩니다. 휴대형 가격은 가설이라 테스트에서 확인해야 합니다.</li>
         <li><b>지속력은 점수 싸움에서 빼냅니다.</b> 휴대형으로 "덧바르는 습관"을 만들면 고객은 지속력을 묻지 않게 됩니다. "향수"로 부르면 이 항목이 바로 약점이 됩니다.</li>
       </ul>
     </div>
 
     <h3 class="block">제품력 채점표</h3>
-    <div class="tw"><table id="t-quad"><thead><tr><th>제품</th><th class="num">원/ml</th><th class="num">원료</th><th class="num">조향</th><th class="num">용기·오브제</th><th class="num">브랜드 신뢰</th><th class="num">지속력·사용성</th><th class="num">제품력</th></tr></thead><tbody></tbody></table>
-    <caption>공개 정보(공식몰 전성분·제품 설명·유통 채널·인지도)를 바탕으로 한 연구자 평가입니다. 시향 테스트가 아니므로 절대값보다 상대 위치로 읽어 주세요. 온백은 2회차 기준 기획(천연 에센셜 오일, 선추 오브제, 지속 약 3시간)을 가정한 점수입니다.</caption></div>
+    <div class="tw"><table id="t-quad"><thead><tr><th>제품</th><th class="num">판매가</th><th class="num">용량</th><th class="num">원료</th><th class="num">조향</th><th class="num">용기·오브제</th><th class="num">브랜드 신뢰</th><th class="num">지속력·사용성</th><th class="num">제품력</th></tr></thead><tbody></tbody></table>
+    <caption>판매가는 2026-10 공식몰·백화점 온라인 표시가입니다(바이레도는 롯데온 110,000원 기준, Selfridges KR은 121,000원). 제품력은 공개 정보(공식몰 전성분·제품 설명·유통 채널·인지도)를 바탕으로 한 연구자 평가입니다. 시향 테스트가 아니므로 절대값보다 상대 위치로 읽어 주세요. 온백은 2회차 기준 기획(천연 에센셜 오일, 선추 오브제, 지속 약 3시간)을 가정한 점수입니다.</caption></div>
   </div>
 </section>
 
@@ -745,22 +746,22 @@
     aroma: { color:'#1baf7a', shape:'triangle' }
   };
   var D = [
-    { n:'온백 10ml (가설)', g:'me', p:8900, s:[2,1.5,2,0.5,0.5], lx:-14, ly:24, a:'end' },
-    { n:'르라보 리퀴드 밤', g:'niche', p:15833, s:[1,2,1,2,2], lx:12, ly:-12, a:'start' },
-    { n:'바이레도 롤온', g:'niche', p:14667, s:[1,2,1,2,1.5], lx:12, ly:18, a:'start' },
-    { n:'탬버린즈 퍼퓸오일', g:'design', p:7250, s:[1,1.5,2,2,1], lx:12, ly:-12, a:'start' },
-    { n:'이솝 진저 플라이트', g:'design', p:4500, s:[2,1,0.5,2,1], lx:12, ly:-12, a:'start' },
-    { n:'록시땅 롤온 EDT', g:'design', p:2900, s:[0.5,1,0.5,1.5,1], lx:12, ly:18, a:'start' },
-    { n:'아로마티카 롤온', g:'aroma', p:3667, s:[2,0.5,0.5,1.5,0.5], lx:-12, ly:-12, a:'end' },
-    { n:'이브나잇 블렌디드', g:'aroma', p:1920, s:[1.5,0.5,0,0.5,0.5], lx:12, ly:-10, a:'start' },
-    { n:'바이오앤바이오 롤온', g:'aroma', p:1250, s:[1,0.5,0,0.5,0.5], lx:-12, ly:18, a:'end' },
-    { n:'더허브스토리 롤링향수', g:'aroma', p:700, s:[0.5,0.5,0,0,0.5], lx:-12, ly:22, a:'end' }
+    { n:'온백 10ml (가설)', g:'me', p:89000, v:'10ml', s:[2,1.5,2,0.5,0.5], lx:-14, ly:24, a:'end' },
+    { n:'르라보 리퀴드 밤', g:'niche', p:142500, v:'9ml', s:[1,2,1,2,2], lx:12, ly:-12, a:'start' },
+    { n:'바이레도 롤온', g:'niche', p:110000, v:'7.5ml', s:[1,2,1,2,1.5], lx:-12, ly:18, a:'end' },
+    { n:'탬버린즈 퍼퓸오일', g:'design', p:43500, v:'6ml', s:[1,1.5,2,2,1], lx:12, ly:-12, a:'start' },
+    { n:'이솝 진저 플라이트', g:'design', p:45000, v:'10ml', s:[2,1,0.5,2,1], lx:12, ly:-12, a:'start' },
+    { n:'록시땅 롤온 EDT', g:'design', p:29000, v:'10ml', s:[0.5,1,0.5,1.5,1], lx:12, ly:18, a:'start' },
+    { n:'아로마티카 롤온', g:'aroma', p:33000, v:'9ml', s:[2,0.5,0.5,1.5,0.5], lx:-12, ly:-12, a:'end' },
+    { n:'이브나잇 블렌디드', g:'aroma', p:19200, v:'10ml', s:[1.5,0.5,0,0.5,0.5], lx:12, ly:-10, a:'start' },
+    { n:'바이오앤바이오 롤온', g:'aroma', p:12500, v:'10ml', s:[1,0.5,0,0.5,0.5], lx:-12, ly:18, a:'end' },
+    { n:'더허브스토리 롤링향수', g:'aroma', p:7000, v:'10ml', s:[0.5,0.5,0,0,0.5], lx:-12, ly:22, a:'end' }
   ];
   D.forEach(function(d){ d.score = d.s.reduce(function(a, b){ return a + b; }, 0); });
 
   var W = 760, H = 540, m = { l:64, r:28, t:28, b:66 };
   var iw = W - m.l - m.r, ih = H - m.t - m.b;
-  var lmin = Math.log10(20000), lmax = Math.log10(500);   // 왼쪽 = 비쌈, 오른쪽 = 쌈
+  var lmin = Math.log10(200000), lmax = Math.log10(5000);   // 왼쪽 = 비쌈, 오른쪽 = 쌈
   var x = function(p){ return m.l + (Math.log10(p) - lmin) / (lmax - lmin) * iw; };
   var y = function(v){ return m.t + (1 - v / 10) * ih; };
   var NS = 'http://www.w3.org/2000/svg';
@@ -772,7 +773,7 @@
   }
   function txt(s, attrs, parent){ var t = el('text', attrs, parent); t.textContent = s; return t; }
 
-  var xm = x(5000), ym = y(5);
+  var xm = x(50000), ym = y(5);
   // 4분면 배경
   [
     [m.l, m.t, xm - m.l, ym - m.t, '#f3f7ee', '프리미엄 정당화', m.l + 12, m.t + 22, 'start'],
@@ -785,9 +786,9 @@
   });
 
   // 눈금
-  [700, 1000, 2000, 3000, 5000, 7000, 10000, 15000].forEach(function(p){
+  [7000, 10000, 20000, 30000, 50000, 70000, 100000, 150000].forEach(function(p){
     el('line', { x1:x(p), x2:x(p), y1:m.t + ih, y2:m.t + ih + 5, stroke:'#9ca3af' });
-    txt(p >= 1000 ? (p / 1000) + '천' : String(p), { x:x(p), y:m.t + ih + 20, 'text-anchor':'middle', 'font-size':12, fill:'#6b7280' });
+    txt(p < 10000 ? (p / 1000) + '천' : (p / 10000) + '만', { x:x(p), y:m.t + ih + 20, 'text-anchor':'middle', 'font-size':12, fill:'#6b7280' });
   });
   [0, 2, 4, 6, 8, 10].forEach(function(v){
     el('line', { x1:m.l - 5, x2:m.l, y1:y(v), y2:y(v), stroke:'#9ca3af' });
@@ -796,7 +797,7 @@
   el('line', { x1:xm, x2:xm, y1:m.t, y2:m.t + ih, stroke:'#9ca3af', 'stroke-dasharray':'4 4' });
   el('line', { x1:m.l, x2:m.l + iw, y1:ym, y2:ym, stroke:'#9ca3af', 'stroke-dasharray':'4 4' });
   el('rect', { x:m.l, y:m.t, width:iw, height:ih, fill:'none', stroke:'#e5e7eb' });
-  txt('← 비쌈      가격경쟁력 (원/ml, 로그 눈금)      쌈 →', { x:m.l + iw / 2, y:H - 18, 'text-anchor':'middle', 'font-size':13, 'font-weight':700, fill:'#374151' });
+  txt('← 비쌈      가격경쟁력 (판매가, 로그 눈금)      쌈 →', { x:m.l + iw / 2, y:H - 18, 'text-anchor':'middle', 'font-size':13, 'font-weight':700, fill:'#374151' });
   txt('제품력 (10점)', { x:18, y:m.t + ih / 2, 'text-anchor':'middle', 'font-size':13, 'font-weight':700, fill:'#374151', transform:'rotate(-90 18 ' + (m.t + ih / 2) + ')' });
 
   // 온백 가설 범위 (오브제 완성도·신뢰에 따라)
@@ -819,7 +820,7 @@
     var g = el('g', { tabindex:0, style:'cursor:pointer;outline:none' });
     mark(d, g);
     var show = function(){
-      tip.innerHTML = '<b>' + d.n + '</b><br>' + d.p.toLocaleString('ko-KR') + '원/ml · 제품력 <b>' + d.score + '</b><br>' +
+      tip.innerHTML = '<b>' + d.n + '</b><br>' + d.p.toLocaleString('ko-KR') + '원 (' + d.v + ') · 제품력 <b>' + d.score + '</b><br>' +
         '<span>원료 ' + d.s[0] + ' · 조향 ' + d.s[1] + ' · 용기 ' + d.s[2] + ' · 신뢰 ' + d.s[3] + ' · 지속 ' + d.s[4] + '</span>';
       var box = svg.getBoundingClientRect(), k = box.width / W;
       tip.style.left = Math.min(x(d.p) * k + 14, box.width - 230) + 'px';
@@ -831,7 +832,7 @@
   });
 
   document.querySelector('#t-quad tbody').innerHTML = D.slice().sort(function(a, b){ return b.score - a.score; }).map(function(d){
-    return '<tr' + (d.g === 'me' ? ' class="me"' : '') + '><td>' + (d.g === 'me' ? '<b>' + d.n + '</b>' : d.n) + '</td><td class="num">' + d.p.toLocaleString('ko-KR') + '</td>' +
+    return '<tr' + (d.g === 'me' ? ' class="me"' : '') + '><td>' + (d.g === 'me' ? '<b>' + d.n + '</b>' : d.n) + '</td><td class="num">' + d.p.toLocaleString('ko-KR') + '</td><td class="num">' + d.v + '</td>' +
       d.s.map(function(v){ return '<td class="num">' + v + '</td>'; }).join('') + '<td class="num"><b>' + d.score + '</b></td></tr>';
   }).join('');
 })();
